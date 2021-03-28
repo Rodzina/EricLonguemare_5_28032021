@@ -1,0 +1,28 @@
+{
+  "name": "p5-code",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "dev": "parcel src/index.html",
+    "build": "parcel build --public-url . src/index.html --no-source-maps",
+    "prebuild": "rm -rf dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/el-opcr/EricLonguemare_5_28032021.git"
+  },
+  "author": "el-opcr",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/el-opcr/EricLonguemare_5_28032021/issues"
+  },
+  "homepage": "https://github.com/el-opcr/EricLonguemare_5_28032021#readme",
+  "devDependencies": {
+    "@parcel/transformer-image": "^2.0.0-nightly.2242",
+    "@parcel/transformer-sass": "^2.0.0-nightly.630",
+    "parcel": "latest",
+    "sass": "^1.32.8",
+    "sharp": "^0.27.2"
+  }
+}
