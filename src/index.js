@@ -44,9 +44,9 @@ function displayBears(myBear) {
     myCard.href = "#";
     myHtmlContent.appendChild(myCard);
     const myCardPicture = document.createElement("img");
-    myCardPicture.src = myBear.imageUrl + "?w=380&h=380"; //imageUrlTest;
+    myCardPicture.src = myBear.imageUrl.replace(/^http:\/\//i, 'https://') + "?w=380&h=380"; //imageUrlTest;
     myCard.appendChild(myCardPicture);
-    const myCardTitle = document.createElement("p")
+    const myCardTitle = document.createElement("h2")
     myCard.appendChild(myCardTitle);
     const myCardTitleText = document.createTextNode(myBear.name);
     myCardTitle.appendChild(myCardTitleText);
