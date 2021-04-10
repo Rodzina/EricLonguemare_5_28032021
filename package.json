@@ -21,5 +21,8 @@
     "parcel": "next",
     "sass": "^1.32.8",
     "sharp": "^0.27.2"
+  },
+  "dependencies": {
+    "bootstrap": "^5.0.0-beta3"
   }
 }
