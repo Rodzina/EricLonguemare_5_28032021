@@ -1,4 +1,4 @@
-const entryPoint = "http://localhost:3000/api/teddies/"
+const entryPoint = "https://polar-retreat-13131.herokuapp.com/api/teddies/"
 
 let bears = [];
 
@@ -37,7 +37,7 @@ function displayBears(myBear) {
     myCard.href = "#";
     myHtmlContent.appendChild(myCard);
     const myCardPicture = document.createElement("img");
-    myCardPicture.src = myBear.imageUrl + "?w=250&h=250"; //imageUrlTest;
+    myCardPicture.src = myBear.imageUrl + "?w=380&h=380"; //imageUrlTest;
     myCard.appendChild(myCardPicture);
     const myCardTitle = document.createElement("p")
     myCard.appendChild(myCardTitle);
