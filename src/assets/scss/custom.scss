@@ -25,6 +25,9 @@
 }
 */
 
+//customised font
+@import url('https://fonts.googleapis.com/css2?family=Rock+Salt&display=swap');
+
 //@import "../node_modules/bootstrap/scss/bootstrap";
 // scss-docs-start import-stack
 // Configuration
@@ -69,3 +72,17 @@
 // Utilities
 @import "../../../node_modules/bootstrap/scss/utilities/api";
 // scss-docs-end import-stack
+
+a {
+  color: black;
+  text-decoration: none;
+}
+
+.card-title-font {
+  font-family: 'Rock Salt', cursive;
+}
+
+.card-width-350 {
+  max-width: 350px;
+  min-width: 250px
+}

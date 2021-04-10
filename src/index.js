@@ -41,13 +41,17 @@ fetch(entryPoint)
 function displayBears(myBear) {
     const myHtmlContent = document.getElementById("content");
     const myCard = document.createElement("a");
+    myCard.classList.add("card");
+    myCard.classList.add("card-width-350");
     myCard.href = "#";
     myHtmlContent.appendChild(myCard);
     const myCardPicture = document.createElement("img");
     myCardPicture.src = myBear.imageUrl.replace(/^http:\/\//i, 'https://') + "?w=380&h=380"; //imageUrlTest;
     myCard.appendChild(myCardPicture);
+    myCardPicture.classList.add("card-img-top")
     const myCardTitle = document.createElement("h2")
     myCard.appendChild(myCardTitle);
+    myCardTitle.classList.add("card-title-font");
     const myCardTitleText = document.createTextNode(myBear.name);
     myCardTitle.appendChild(myCardTitleText);
 }
