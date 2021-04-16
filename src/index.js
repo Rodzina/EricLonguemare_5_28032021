@@ -42,7 +42,8 @@ function displayBears(myBear) {
     const myHtmlContent = document.getElementById("content");
     const myCard = document.createElement("a");
     myCard.classList.add("card");
-    myCard.classList.add("card-width-350");
+    myCard.classList.add("card-width-350")
+    myCard.classList.add("m-2");
     myCard.href = "#";
     myHtmlContent.appendChild(myCard);
     const myCardPicture = document.createElement("img");
@@ -52,6 +53,7 @@ function displayBears(myBear) {
     const myCardTitle = document.createElement("h2")
     myCard.appendChild(myCardTitle);
     myCardTitle.classList.add("card-title-font");
+    myCardTitle.classList.add("pt-4");
     const myCardTitleText = document.createTextNode(myBear.name);
     myCardTitle.appendChild(myCardTitleText);
 }
