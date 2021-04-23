@@ -5,7 +5,7 @@ import * as bootstrap from 'bootstrap';
 //styles personnalisés
 import './assets/scss/custom.scss'; // Import our scss file
 
-let is_index = location.pathname === "/";
+let is_index = location.pathname === "/EricLonguemare_5_28032021/dist/";
 
 class Teddie {
     constructor(_id, colors, name, description, imageUrl, price) {
