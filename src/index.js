@@ -79,10 +79,12 @@ async function displayAllTeddies(response) {
  * @param myTeddie {{colors: array.<string>, _id: string, name: string, description: string, imageUrl: string, price: number}}
  */
 function displayOneTeddie(myTeddie) {
+    const url = new URL(window.location.href);
+    console.log("URL :" + url);
     const myHtmlContent = document.getElementById("content");
     const myCard = document.createElement("a");
     ["card", "card-width-350", "m-2"].forEach(className => myCard.classList.add(className));
-    myCard.href = "/" + encodeURI(myTeddie.name).replace(/%20/g, '-') + "?" + "id=" + myTeddie._id;
+    myCard.href = url + encodeURI(myTeddie.name).replace(/%20/g, '-') + "?" + "id=" + myTeddie._id;
     myCard.addEventListener("click", function () {
         sessionStorage.setItem('_id', myTeddie._id);
     })
