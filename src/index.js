@@ -54,11 +54,8 @@ class Cart {
  * @returns {{baseurl: string, url: URL}}
  */
 function getUrl() {
-    const url = new URL(location.href);
-    const hostname = url.hostname;
-    const pathname = url.pathname;
-    const protocol = url.protocol;
-    const port = url.port;
+    const url = new URL(location.href), hostname = url.hostname, pathname = url.pathname, protocol = url.protocol,
+        port = url.port;
     let baseUrl = protocol + "//" + hostname;
     switch ("localhost") {
         case hostname: // we are on dev host
@@ -92,6 +89,7 @@ async function fetchFromAPI(entryPoint) {
  *
  * @param element
  * @param teddy
+ * @param params
  * @param suffix
  * @returns {Promise<void>}
  */
@@ -136,7 +134,10 @@ async function displayAllTeddies(response) {
 async function displayOneTeddie(myTeddie) {
     const myHtmlContent = document.getElementById("content");
     const myCard = document.createElement("a");
-    ["card", "card-width-350", "m-2"].forEach(className => myCard.classList.add(className));
+    for (let i = 0; i < ["card", "card-width-350", "m-2"].length; i++) {
+        const className = ["card", "card-width-350", "m-2"][i];
+        myCard.classList.add(className);
+    }
     myCard.href = getUrl().url + "teddy.html" + "?" + "id=" + myTeddie._id;
     myCard.addEventListener("click", function () {
         sessionStorage.setItem('_id', myTeddie._id);
@@ -166,6 +167,11 @@ async function displayOneTeddie(myTeddie) {
  * @param mTeddy
  */
 async function displayTeddyDetails(mTeddy) {
+    document.title += " - " + mTeddy.name;
+    document.head.children.namedItem('keywords').content += ", " + mTeddy.name;
+    document.head.children.namedItem('description').content += " " + mTeddy.name + ".";
+    document.getElementById("teddyname").innerText = mTeddy.name;
+
     const myHtmlContent = document.getElementById("content");
 
     const myProductPage = document.createElement("div");
@@ -173,17 +179,14 @@ async function displayTeddyDetails(mTeddy) {
 
     const myProductPicture = document.createElement("img");
     myProductPicture.crossOrigin = "anonymous";
+    //myProductPicture.setAttribute("width", "380px");
+    //myProductPicture.setAttribute("height", "250px");
 
     await displayAndStoreTeddyPicture(myProductPicture, mTeddy, "f=webp", "+big")
         .catch(err => console.log(err));
-
+    myProductPicture.alt = mTeddy.name;
+    myProductPicture.classList.add("card-img-top");
     myProductPage.appendChild(myProductPicture);
-
-    const myProductPageTitle = document.createElement("h2");
-    myProductPage.appendChild(myProductPageTitle);
-    myProductPageTitle.classList.add("card-title-font");
-    const myProductPageTitleText = document.createTextNode(mTeddy.name);
-    myProductPageTitle.appendChild(myProductPageTitleText);
 
     const myProductPage2 = document.createElement("div");
     myHtmlContent.appendChild(myProductPage2);
@@ -196,7 +199,15 @@ async function displayTeddyDetails(mTeddy) {
     const myProductPagePrice = document.createElement("p");
     myProductPage2.appendChild(myProductPagePrice);
     const myProductPagePriceValue = document.createTextNode(mTeddy.price);
-    myProductPageDescription.appendChild(myProductPagePriceValue);
+    myProductPagePrice.appendChild(myProductPagePriceValue);
+
+    for (let i = 0; i < mTeddy.colors.length; i++){
+        const option = mTeddy.colors[i];
+        const myProductPageOptions = document.createElement("p");
+        myProductPage2.appendChild(myProductPageOptions);
+        const myProductPageOptionsValues = document.createTextNode(option);
+        myProductPageOptions.appendChild(myProductPageOptionsValues);
+    }
 }
 
 /**
