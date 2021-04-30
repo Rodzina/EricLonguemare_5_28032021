@@ -223,7 +223,7 @@ async function process() {
         }
 
         await myTeddy.store();
-        displayTeddyDetails(myTeddy);
+        await displayTeddyDetails(myTeddy);
     }
 }
 
