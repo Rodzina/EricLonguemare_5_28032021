@@ -53,7 +53,7 @@ class Cart {
  *
  * @returns {{baseurl: string, url: URL}}
  */
-function getUrl(){
+function getUrl() {
     const url = new URL(location.href);
     const hostname = url.hostname;
     const pathname = url.pathname;
@@ -73,7 +73,7 @@ function getUrl(){
     }
     return {
         baseurl: baseUrl,
-        url : url
+        url: url
     }
 }
 
@@ -87,25 +87,53 @@ async function fetchFromAPI(entryPoint) {
         .catch(err => console.log(err));
 }
 
+
+/**
+ *
+ * @param element
+ * @param teddy
+ * @param suffix
+ * @returns {Promise<void>}
+ */
+async function displayAndStoreTeddyPicture(element, teddy, params, suffix) {
+    if (localStorage.getItem(teddy.imageUrl + suffix) === null) {
+        element.addEventListener("load", function () {
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            canvas.width = element.width;
+            canvas.height = element.height;
+            ctx.drawImage(element, 0, 0, element.width, element.height);
+            try {
+                localStorage.setItem(teddy.imageUrl + suffix, JSON.stringify(canvas.toDataURL("image/webp")));
+            } catch (e) {
+                console.log("Storage failed: " + e);
+            }
+        }, false)
+        element.src = teddy.imageUrl.replace(/^http:\/\//i, 'https://') + "?" + params;
+    } else {
+        element.src = JSON.parse(localStorage.getItem(teddy.imageUrl + suffix));
+    }
+}
+
 /**
  * @param response
  */
 async function displayAllTeddies(response) {
     await response.json()
         .then(datas => {
-            datas.forEach(row => {
+            for (const row of datas) {
                 const myTeddy = new Teddy(row.colors, row._id, row.name, row.description, row.imageUrl, row.price);
                 displayOneTeddie(myTeddy);
                 myTeddy.store(); // put item in local storage.
-            })
+            }
         })
 }
 
 /**
- * build html for one teddie card
+ * build html for one teddie card on home page
  * @param myTeddie {{colors: array.<string>, _id: string, name: string, description: string, imageUrl: string, price: number}}
  */
-function displayOneTeddie(myTeddie) {
+async function displayOneTeddie(myTeddie) {
     const myHtmlContent = document.getElementById("content");
     const myCard = document.createElement("a");
     ["card", "card-width-350", "m-2"].forEach(className => myCard.classList.add(className));
@@ -118,23 +146,11 @@ function displayOneTeddie(myTeddie) {
     myCardPicture.crossOrigin = "anonymous";
     myCardPicture.setAttribute("width", "380px");
     myCardPicture.setAttribute("height", "250px");
-    if (localStorage.getItem(myTeddie.imageUrl) === null) {
-        myCardPicture.addEventListener("load", function () {
-            const canvas = document.createElement("canvas");
-            const ctx = canvas.getContext("2d");
-            canvas.width = myCardPicture.width;
-            canvas.height = myCardPicture.height;
-            ctx.drawImage(myCardPicture, 0, 0, myCardPicture.width, myCardPicture.height);
-            try {
-                localStorage.setItem(myTeddie.imageUrl, JSON.stringify(canvas.toDataURL("image/webp")));
-            } catch (e) {
-                console.log("Storage failed: " + e);
-            }
-        }, false)
-        myCardPicture.src = myTeddie.imageUrl.replace(/^http:\/\//i, 'https://') + "?w=380&h=380&height=250&f=webp&&crop=cover";
-    } else {
-        myCardPicture.src = JSON.parse(localStorage.getItem(myTeddie.imageUrl));
-    }
+
+
+    await displayAndStoreTeddyPicture(myCardPicture, myTeddie, "w=380&h=380&height=250&f=webp&&crop=cover", "+small")
+        .catch(err => console.log(err));
+
     myCardPicture.alt = myTeddie.name;
     myCard.appendChild(myCardPicture);
     myCardPicture.classList.add("card-img-top");
@@ -149,16 +165,19 @@ function displayOneTeddie(myTeddie) {
 /**
  * @param mTeddy
  */
-function displayTeddyDetails(mTeddy) {
+async function displayTeddyDetails(mTeddy) {
     const myHtmlContent = document.getElementById("content");
 
     const myProductPage = document.createElement("div");
     myHtmlContent.appendChild(myProductPage);
 
     const myProductPicture = document.createElement("img");
-    myProductPicture.src = mTeddy.imageUrl.replace(/^http:\/\//i, 'https://') + "?f=webp";
+    myProductPicture.crossOrigin = "anonymous";
+
+    await displayAndStoreTeddyPicture(myProductPicture, mTeddy, "f=webp", "+big")
+        .catch(err => console.log(err));
+
     myProductPage.appendChild(myProductPicture);
-    //myProductPicture.classList.add("card-img-top");
 
     const myProductPageTitle = document.createElement("h2");
     myProductPage.appendChild(myProductPageTitle);
