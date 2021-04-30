@@ -23,10 +23,9 @@ class Teddy {
         }
     }
 
-    static async createFromJSON(mJSON) {
+    static createFromJSON(teddyInfo) {
         try {
-            const datas = await mJSON;
-            return Object.assign(new Teddy(), JSON.parse(datas));
+            return Object.assign(new Teddy(), JSON.parse(teddyInfo));
         } catch (e) {
             console.log("createFromJSON error :" + e);
         }
@@ -44,7 +43,7 @@ class Client {
     }
 }
 
-class Basket {
+class Cart {
     constructor() {
         this.items = [];
     }
@@ -52,23 +51,31 @@ class Basket {
 
 /**
  *
- * @returns {URL}
- * @constructor
+ * @returns {{baseurl: string, url: URL}}
  */
 function getUrl(){
-    const url = new URL(window.location.href);
-    console.log("URL :" + url);
-    return url;
+    const url = new URL(location.href);
+    const hostname = url.hostname;
+    const pathname = url.pathname;
+    const protocol = url.protocol;
+    const port = url.port;
+    let baseUrl = protocol + "//" + hostname;
+    switch ("localhost") {
+        case hostname: // we are on dev host
+            baseUrl += ":" + port;
+            break;
+        default:
+            let segments = pathname.split("/")
+            for (let index = 0; index < segments.length - 1; ++index) {
+                baseUrl += segments[index] + "/"
+            }
+            break;
+    }
+    return {
+        baseurl: baseUrl,
+        url : url
+    }
 }
-
-/**
- *
- * @param url
- */
-function setDocumentBaseHref(url){
-    document.head.innerHTML = document.head.innerHTML + "<base href='" + url + "' />";
-}
-
 
 /**
  * async fetch of API url for JSON response
@@ -76,7 +83,8 @@ function setDocumentBaseHref(url){
  * @returns {Promise<Response>}
  */
 async function fetchFromAPI(entryPoint) {
-    return await fetch(entryPoint);
+    return await fetch(entryPoint)
+        .catch(err => console.log(err));
 }
 
 /**
@@ -101,7 +109,7 @@ function displayOneTeddie(myTeddie) {
     const myHtmlContent = document.getElementById("content");
     const myCard = document.createElement("a");
     ["card", "card-width-350", "m-2"].forEach(className => myCard.classList.add(className));
-    myCard.href = getUrl() + "teddy.html" + "?" + "id=" + myTeddie._id;
+    myCard.href = getUrl().url + "teddy.html" + "?" + "id=" + myTeddie._id;
     myCard.addEventListener("click", function () {
         sessionStorage.setItem('_id', myTeddie._id);
     })
@@ -139,38 +147,9 @@ function displayOneTeddie(myTeddie) {
 }
 
 /**
- *
- * @param datas
- * @returns {Promise<*>}
+ * @param mTeddy
  */
-async function awaitTeddyDetails(datas) {
-    try {
-        return await datas;
-    } catch (e) {
-        console.log("awaitTeddyDetails :" + datas + e);
-    }
-}
-
-/**
- *
- * @param datas
- * @returns {Promise<void>}
- */
-async function storeTeddyDetails(datas) {
-    try {
-        await datas.store();
-    } catch (e) {
-        console.log("storeTeddyDetails :" + datas + e);
-    }
-}
-
-/**
- *
- * @param datas
- * @returns {Promise<void>}
- */
-async function displayTeddyDetails(datas) {
-    const mTeddy = await datas;
+function displayTeddyDetails(mTeddy) {
     const myHtmlContent = document.getElementById("content");
 
     const myProductPage = document.createElement("div");
@@ -199,17 +178,16 @@ async function displayTeddyDetails(datas) {
     myProductPage2.appendChild(myProductPagePrice);
     const myProductPagePriceValue = document.createTextNode(mTeddy.price);
     myProductPageDescription.appendChild(myProductPagePriceValue);
-
 }
 
 /**
  *
  */
-function process() {
-    const url = getUrl();
-    setDocumentBaseHref(url);
+async function process() {
+    const homeURL = document.getElementById("homepage");
+    homeURL.href = getUrl().baseurl;
     const entryPoint = "https://polar-retreat-13131.herokuapp.com/api/teddies/";
-    const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(location.search);
     if (!params.has("id")) {
         fetchFromAPI(entryPoint)
             .then(response => displayAllTeddies(response));
@@ -217,30 +195,21 @@ function process() {
         const m_id = params.get("id");
         let myTeddy;
         if (m_id in localStorage) {
-            myTeddy = Teddy.createFromJSON(localStorage.getItem(m_id));
+            myTeddy = await Teddy.createFromJSON(localStorage.getItem(m_id));
         } else {
-            myTeddy = Teddy.createFromJSON(
-                fetchFromAPI(entryPoint + m_id)
-                    .then(response => {
-                        return response.json();
-                    })
-                    .then(value => {
-                        return JSON.stringify(value);
-                    })
-            )
+            const teddyInfo = await fetchFromAPI(entryPoint + m_id)
+                .then(response => response.json())
+                .then(value => JSON.stringify(value))
+            myTeddy = await Teddy.createFromJSON(teddyInfo)
         }
-        awaitTeddyDetails(myTeddy)
-            .then(datas => {
-                storeTeddyDetails(datas)
-                return datas;
-            })
-            .then(datas => {
-                return displayTeddyDetails(datas);
-            })
+
+        await myTeddy.store();
+        displayTeddyDetails(myTeddy);
     }
 }
 
-process();
+process()
+    .catch(err => console.log(err));
 
 //Check boostrap availability
 
