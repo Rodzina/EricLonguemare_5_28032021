@@ -50,6 +50,25 @@ class Basket {
     }
 }
 
+/**
+ *
+ * @returns {URL}
+ * @constructor
+ */
+function getUrl(){
+    const url = new URL(window.location.href);
+    console.log("URL :" + url);
+    return url;
+}
+
+/**
+ *
+ * @param url
+ */
+function setDocumentBaseHref(url){
+    document.head.innerHTML = document.head.innerHTML + "<base href='" + url + "' />";
+}
+
 
 /**
  * async fetch of API url for JSON response
@@ -79,12 +98,10 @@ async function displayAllTeddies(response) {
  * @param myTeddie {{colors: array.<string>, _id: string, name: string, description: string, imageUrl: string, price: number}}
  */
 function displayOneTeddie(myTeddie) {
-    const url = new URL(window.location.href);
-    console.log("URL :" + url);
     const myHtmlContent = document.getElementById("content");
     const myCard = document.createElement("a");
     ["card", "card-width-350", "m-2"].forEach(className => myCard.classList.add(className));
-    myCard.href = url + "teddy.html" + "?" + "id=" + myTeddie._id;
+    myCard.href = getUrl() + "teddy.html" + "?" + "id=" + myTeddie._id;
     myCard.addEventListener("click", function () {
         sessionStorage.setItem('_id', myTeddie._id);
     })
@@ -189,6 +206,8 @@ async function displayTeddyDetails(datas) {
  *
  */
 function process() {
+    const url = getUrl();
+    setDocumentBaseHref(url);
     const entryPoint = "https://polar-retreat-13131.herokuapp.com/api/teddies/";
     const params = new URLSearchParams(window.location.search);
     if (!params.has("id")) {
