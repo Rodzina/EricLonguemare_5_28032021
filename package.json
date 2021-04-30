@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "description": "",
   "scripts": {
-    "dev": "parcel src/index.html",
-    "build": "parcel build --public-url . src/index.html --no-source-maps",
+    "dev": "parcel src/index.html src/teddy.html",
+    "build": "parcel build --public-url . src/index.html src/teddy.html --no-source-maps",
     "prebuild": "rm -rf dist"
   },
   "repository": {
