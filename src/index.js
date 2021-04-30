@@ -170,7 +170,9 @@ async function displayTeddyDetails(mTeddy) {
     document.title += " - " + mTeddy.name;
     document.head.children.namedItem('keywords').content += ", " + mTeddy.name;
     document.head.children.namedItem('description').content += " " + mTeddy.name + ".";
-    document.getElementById("teddyname").innerText = mTeddy.name;
+    const myH1 = document.getElementById("teddyname");
+    myH1.innerText = mTeddy.name;
+    myH1.classList.add("text-highlighted");
 
     const myHtmlContent = document.getElementById("content");
 
