@@ -4,44 +4,8 @@ import * as bootstrap from 'bootstrap';
 // utilise ESM
 //styles personnalisés
 import './assets/scss/custom.scss'; // Import our scss file
-
-class Teddy {
-    constructor(colors, _id, name, description, imageUrl, price) {
-        this.colors = colors;
-        this._id = _id;
-        this.name = name;
-        this.description = description;
-        this.imageUrl = imageUrl;
-        this.price = price;
-    }
-
-    store() {
-        try {
-            localStorage.setItem(this._id, JSON.stringify(this));
-        } catch (e) {
-            console.log("Store error :" + this._id + e);
-        }
-    }
-
-    static createFromJSON(teddyInfo) {
-        try {
-            return Object.assign(new Teddy(), JSON.parse(teddyInfo));
-        } catch (e) {
-            console.log("createFromJSON error :" + e);
-        }
-
-    }
-}
-
-class Client {
-    constructor(firstName, lastName, address, city, email) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.adress = address;
-        this.city = city;
-        this.email = email;
-    }
-}
+import {Teddy} from "./classes/teddy"; // Import our Teddy classes
+import {Client} from "./classes/client"; // Import our Teddy classes
 
 class Cart {
     constructor() {
@@ -53,7 +17,7 @@ class Cart {
  *
  * @returns {{baseurl: string, url: URL}}
  */
-function getUrl() {
+const getUrl = () => {
     const url = new URL(location.href), hostname = url.hostname, pathname = url.pathname, protocol = url.protocol,
         port = url.port;
     let baseUrl = protocol + "//" + hostname;
@@ -72,18 +36,15 @@ function getUrl() {
         baseurl: baseUrl,
         url: url
     }
-}
+};
 
 /**
  * async fetch of API url for JSON response
  * @param entryPoint
  * @returns {Promise<Response>}
  */
-async function fetchFromAPI(entryPoint) {
-    return await fetch(entryPoint)
-        .catch(err => console.log(err));
-}
-
+const fetchFromAPI = async entryPoint => await fetch(entryPoint)
+    .catch(err => console.log(err));
 
 /**
  *
@@ -93,7 +54,7 @@ async function fetchFromAPI(entryPoint) {
  * @param suffix
  * @returns {Promise<void>}
  */
-async function displayAndStoreTeddyPicture(element, teddy, params, suffix) {
+const displayAndStoreTeddyPicture = async (element, teddy, params, suffix) => {
     if (localStorage.getItem(teddy.imageUrl + suffix) === null) {
         element.addEventListener("load", function () {
             const canvas = document.createElement("canvas");
@@ -111,36 +72,22 @@ async function displayAndStoreTeddyPicture(element, teddy, params, suffix) {
     } else {
         element.src = JSON.parse(localStorage.getItem(teddy.imageUrl + suffix));
     }
-}
-
-/**
- * @param response
- */
-async function displayAllTeddies(response) {
-    await response.json()
-        .then(datas => {
-            for (const row of datas) {
-                const myTeddy = new Teddy(row.colors, row._id, row.name, row.description, row.imageUrl, row.price);
-                displayOneTeddie(myTeddy);
-                myTeddy.store(); // put item in local storage.
-            }
-        })
-}
+};
 
 /**
  * build html for one teddie card on home page
- * @param myTeddie {{colors: array.<string>, _id: string, name: string, description: string, imageUrl: string, price: number}}
+ * @param teddy {{colors: array.<string>, _id: string, name: string, description: string, imageUrl: string, price: number}}
  */
-async function displayOneTeddie(myTeddie) {
+const displayTeddyCard = async teddy => {
     const myHtmlContent = document.getElementById("content");
     const myCard = document.createElement("a");
     for (let i = 0; i < ["card", "card-width-350", "m-2"].length; i++) {
         const className = ["card", "card-width-350", "m-2"][i];
         myCard.classList.add(className);
     }
-    myCard.href = getUrl().url + "teddy.html" + "?" + "id=" + myTeddie._id;
+    myCard.href = getUrl().url + "teddy.html" + "?" + "id=" + teddy._id;
     myCard.addEventListener("click", function () {
-        sessionStorage.setItem('_id', myTeddie._id);
+        sessionStorage.setItem('_id', teddy._id);
     })
     myHtmlContent.appendChild(myCard);
     const myCardPicture = document.createElement("img");
@@ -149,94 +96,128 @@ async function displayOneTeddie(myTeddie) {
     myCardPicture.setAttribute("height", "250px");
 
 
-    await displayAndStoreTeddyPicture(myCardPicture, myTeddie, "w=380&h=380&height=250&f=webp&&crop=cover", "+small")
+    await displayAndStoreTeddyPicture(myCardPicture, teddy, "w=380&h=380&height=250&f=webp&&crop=cover", "+small")
         .catch(err => console.log(err));
 
-    myCardPicture.alt = myTeddie.name;
+    myCardPicture.alt = teddy.name;
     myCard.appendChild(myCardPicture);
     myCardPicture.classList.add("card-img-top");
     const myCardTitle = document.createElement("h2");
     myCard.appendChild(myCardTitle);
     myCardTitle.classList.add("card-title-font");
     myCardTitle.classList.add("pt-4");
-    const myCardTitleText = document.createTextNode(myTeddie.name);
+    const myCardTitleText = document.createTextNode(teddy.name);
     myCardTitle.appendChild(myCardTitleText);
-}
+};
 
 /**
- * @param mTeddy
+ * @param response
  */
-async function displayTeddyDetails(mTeddy) {
-    document.title += " - " + mTeddy.name;
-    document.head.children.namedItem('keywords').content += ", " + mTeddy.name;
-    document.head.children.namedItem('description').content += " " + mTeddy.name + ".";
-    document.getElementById("teddyname").innerText = mTeddy.name;
+const displayHome = async response => {
+    await response.json()
+        .then(datas => {
+            for (const row of datas) {
+                const myTeddy = new Teddy(row.colors, row._id, row.name, row.description, row.imageUrl, row.price);
+                displayTeddyCard(myTeddy);
+                myTeddy.store(); // put item in local storage.
+            }
+        })
+};
 
-    const myHtmlContent = document.getElementById("content");
+/**
+ * @param teddy
+ */
+async function displayTeddyPage(teddy) {
+    document.title += " | " + teddy.name;
+    document.head.children.namedItem('keywords').content += ", " + teddy.name;
+    document.head.children.namedItem('description').content += " " + teddy.name + ".";
+    const teddyH1 = document.getElementById("teddyname");
+    teddyH1.innerText = teddy.name;
+    teddyH1.classList.add("text-highlighted");
 
-    const myProductPage = document.createElement("div");
-    myHtmlContent.appendChild(myProductPage);
+    const htmlContent = document.getElementById("content");
 
-    const myProductPicture = document.createElement("img");
-    myProductPicture.crossOrigin = "anonymous";
-    //myProductPicture.setAttribute("width", "380px");
-    //myProductPicture.setAttribute("height", "250px");
+    const teddyPictureDiv = document.createElement("div");
+    htmlContent.appendChild(teddyPictureDiv);
 
-    await displayAndStoreTeddyPicture(myProductPicture, mTeddy, "f=webp", "+big")
+    const teddyPicture = document.createElement("img");
+    teddyPicture.crossOrigin = "anonymous";
+    //teddyPicture.setAttribute("width", "380px");
+    //teddyPicture.setAttribute("height", "250px");
+
+    await displayAndStoreTeddyPicture(teddyPicture, teddy, "f=webp", "+big")
         .catch(err => console.log(err));
-    myProductPicture.alt = mTeddy.name;
-    myProductPicture.classList.add("card-img-top");
-    myProductPage.appendChild(myProductPicture);
+    teddyPicture.alt = teddy.name;
+    teddyPicture.classList.add("card-img-top");
+    teddyPictureDiv.appendChild(teddyPicture);
 
-    const myProductPage2 = document.createElement("div");
-    myHtmlContent.appendChild(myProductPage2);
+    const teddyInfosDiv = document.createElement("div");
+    htmlContent.appendChild(teddyInfosDiv);
 
-    const myProductPageDescription = document.createElement("p");
-    myProductPage2.appendChild(myProductPageDescription);
-    const myProductPageDescriptionText = document.createTextNode(mTeddy.description);
-    myProductPageDescription.appendChild(myProductPageDescriptionText);
+    const teddyDescription = document.createElement("p");
+    teddyInfosDiv.appendChild(teddyDescription);
+    const teddyDescriptionText = document.createTextNode(teddy.description);
+    teddyDescription.appendChild(teddyDescriptionText);
 
-    const myProductPagePrice = document.createElement("p");
-    myProductPage2.appendChild(myProductPagePrice);
-    const myProductPagePriceValue = document.createTextNode(mTeddy.price);
-    myProductPagePrice.appendChild(myProductPagePriceValue);
+    const teddyPrice = document.createElement("p");
+    teddyInfosDiv.appendChild(teddyPrice);
+    const teddyPriceValue = document.createTextNode(teddy.price);
+    teddyPrice.appendChild(teddyPriceValue);
 
-    for (let i = 0; i < mTeddy.colors.length; i++){
-        const option = mTeddy.colors[i];
-        const myProductPageOptions = document.createElement("p");
-        myProductPage2.appendChild(myProductPageOptions);
-        const myProductPageOptionsValues = document.createTextNode(option);
-        myProductPageOptions.appendChild(myProductPageOptionsValues);
+    const teddyColorsOptions = document.createElement("div");
+    teddyColorsOptions.classList.add("btn-group");
+    teddyColorsOptions.setAttribute("role", "group")
+    teddyInfosDiv.appendChild(teddyColorsOptions);
+
+    for (let i = 0; i < teddy.colors.length; i++) {
+        const option = teddy.colors[i];
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = "btnradio";
+        input.setAttribute("id", "btnradio" + (i +1) );
+        input.setAttribute("autocomplete", "off");
+        input.classList.add("btn-check");
+        teddyColorsOptions.appendChild(input);
+        const optionLabel = document.createElement("label");
+        const optionLabelClasses = ["btn", "btn-outline-primary"];
+        for (let i1 = 0; i1 < optionLabelClasses.length; i1++) {
+            const theClass = optionLabelClasses[i1];
+            optionLabel.classList.add(theClass);
+        }
+        optionLabel.setAttribute("for", "btnradio" + (i +1))
+        const optionLabelDescription = document.createTextNode(option);
+        optionLabel.appendChild(optionLabelDescription);
+        teddyColorsOptions.appendChild(optionLabel);
     }
 }
 
 /**
  *
  */
-async function process() {
+const process = async () => {
     const homeURL = document.getElementById("homepage");
     homeURL.href = getUrl().baseurl;
     const entryPoint = "https://polar-retreat-13131.herokuapp.com/api/teddies/";
     const params = new URLSearchParams(location.search);
     if (!params.has("id")) {
         fetchFromAPI(entryPoint)
-            .then(response => displayAllTeddies(response));
+            .then(response => displayHome(response));
     } else {
-        const m_id = params.get("id");
-        let myTeddy;
-        if (m_id in localStorage) {
-            myTeddy = await Teddy.createFromJSON(localStorage.getItem(m_id));
+        const id = params.get("id");
+        let teddy;
+        if (id in localStorage) {
+            teddy = await Teddy.createFromJSON(localStorage.getItem(id));
         } else {
-            const teddyInfo = await fetchFromAPI(entryPoint + m_id)
+            const teddyInfo = await fetchFromAPI(entryPoint + id)
                 .then(response => response.json())
                 .then(value => JSON.stringify(value))
-            myTeddy = await Teddy.createFromJSON(teddyInfo)
+            teddy = await Teddy.createFromJSON(teddyInfo)
         }
 
-        await myTeddy.store();
-        await displayTeddyDetails(myTeddy);
+        await teddy.store();
+        await displayTeddyPage(teddy);
     }
-}
+};
 
 process()
     .catch(err => console.log(err));
