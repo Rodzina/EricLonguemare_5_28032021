@@ -138,8 +138,12 @@ async function displayTeddyPage(teddy) {
 
     const htmlContent = document.getElementById("content");
 
+    /*
+
     const teddyPictureDiv = document.createElement("div");
     htmlContent.appendChild(teddyPictureDiv);
+
+     */
 
     const teddyPicture = document.createElement("img");
     teddyPicture.crossOrigin = "anonymous";
@@ -150,25 +154,50 @@ async function displayTeddyPage(teddy) {
         .catch(err => console.log(err));
     teddyPicture.alt = teddy.name;
     teddyPicture.classList.add("card-img-top");
-    teddyPictureDiv.appendChild(teddyPicture);
+    htmlContent.appendChild(teddyPicture);
 
     const teddyInfosDiv = document.createElement("div");
+    teddyInfosDiv.classList.add("card-body");
     htmlContent.appendChild(teddyInfosDiv);
 
-    const teddyDescription = document.createElement("p");
+    const teddyDescription = document.createElement("div");
     teddyInfosDiv.appendChild(teddyDescription);
     const teddyDescriptionText = document.createTextNode(teddy.description);
     teddyDescription.appendChild(teddyDescriptionText);
 
-    const teddyPrice = document.createElement("p");
-    teddyInfosDiv.appendChild(teddyPrice);
-    const teddyPriceValue = document.createTextNode(teddy.price);
-    teddyPrice.appendChild(teddyPriceValue);
+    const teddyPriceContainer = document.createElement("div");
+    teddyInfosDiv.appendChild(teddyPriceContainer);
+    teddyPriceContainer.classList.add("price-container");
+
+    const teddyPrice = document.createElement("div");
+    teddyPriceContainer.appendChild(teddyPrice);
+    teddyPrice.classList.add("price");
+
+    const teddyPriceLabel = document.createElement("span");
+    teddyPrice.appendChild(teddyPriceLabel);
+    teddyPriceLabel.classList.add("label");
+
+    const teddyPriceLabelTextOne = document.createTextNode("Achète moi !")
+    teddyPriceLabel.appendChild(teddyPriceLabelTextOne);
+
+    const teddyPriceTextValue = document.createElement("span");
+    teddyPrice.appendChild(teddyPriceTextValue);
+    teddyPriceTextValue.classList.add("number");
+
+    const teddyPriceValue = document.createTextNode(new Intl.NumberFormat("fr-FR", {style: "currency", currency: "EUR"}).format(teddy.price/100).replace("€", "Br")); //Brouzouf
+    teddyPriceTextValue.appendChild(teddyPriceValue);
+
+    const teddyPriceLabelTwo = document.createElement("span");
+    teddyPrice.appendChild(teddyPriceLabelTwo);
+    teddyPriceLabelTwo.classList.add("label");
+
+    const teddyPriceLabelTextTwo = document.createTextNode("Maintenant Stp ;)")
+    teddyPriceLabelTwo.appendChild(teddyPriceLabelTextTwo);
 
     const teddyColorsOptions = document.createElement("div");
     teddyColorsOptions.classList.add("btn-group");
     teddyColorsOptions.setAttribute("role", "group")
-    teddyInfosDiv.appendChild(teddyColorsOptions);
+    htmlContent.appendChild(teddyColorsOptions);
 
     for (let i = 0; i < teddy.colors.length; i++) {
         const option = teddy.colors[i];
