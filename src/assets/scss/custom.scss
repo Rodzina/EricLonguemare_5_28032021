@@ -175,7 +175,95 @@ a {
 .text-highlighted {
   color: #0a58ca;
 }
-
+/*
 .card-desk {
   min-height: 700px;
+}
+
+ */
+
+.card {
+  border: none !important;
+  max-width: 500px;
+  margin: auto;
+}
+
+//teddy page price labels
+
+.price-container,
+.price-container:before,
+.price-container:after,
+.price-container .price,
+.price-container .price:before,
+.price-container .price:after {
+  height: 8.5em;
+  width: 8.5em;
+  background: #000 url(../images/background-dark.webp) top left no-repeat;
+  background-size: 8.5em;
+  margin: auto;
+}
+
+.price-container:before,
+.price-container:after,
+.price-container .price:before,
+.price-container .price:after {
+  content: "";
+  position: absolute;
+}
+
+.price-container {
+  margin-bottom: 5em;
+  position: relative;
+  top: 2.5em;
+  transform: rotate(-45deg);
+}
+
+.price-container:before {
+  top: 0;
+  left: 0;
+  transform: rotate(-30deg);
+}
+
+.price-container:after {
+  top: 0;
+  left: 0;
+  transform: rotate(-15deg);
+}
+
+.price-container .price {
+  padding: .5em 0;
+  height: 7.5em;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  transform: rotate(45deg);
+  z-index: 1;
+}
+
+.price-container .price:before {
+  top: 0;
+  left: 0;
+  transform: rotate(60deg);
+}
+
+.price-container .price:after {
+  top: 0;
+  left: 0;
+  transform: rotate(75deg);
+}
+
+.price-container .price span {
+  position: relative;
+  z-index: 100;
+  display: block;
+  text-align: center;
+  color: #0a58ca;
+  font-family: 'Rock Salt', cursive;
+}
+
+.price-container .price span.number {
+  font-weight: bold;
+  font-size: 1.2em;
+  line-height: 2em;
+  color: #fff;
 }
