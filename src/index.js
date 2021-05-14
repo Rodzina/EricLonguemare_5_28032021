@@ -82,10 +82,8 @@ const displayAndStoreTeddyPicture = async (element, teddy, params, suffix) => {
 const displayTeddyCard = async teddy => {
     const myHtmlContent = document.getElementById("content");
     const myCard = document.createElement("a");
-    for (let i = 0; i < ["card", "card-width-350", "m-2"].length; i++) {
-        const className = ["card", "card-width-350", "m-2"][i];
-        myCard.classList.add(className);
-    }
+    const className = ["card", "card-width-350", "m-2"];
+    myCard.classList.add(...className);
     myCard.href = getUrl().url + "teddy.html" + "?" + "id=" + teddy._id;
     myCard.addEventListener("click", function () {
         sessionStorage.setItem('_id', teddy._id);
@@ -105,14 +103,16 @@ const displayTeddyCard = async teddy => {
     myCardPicture.classList.add("card-img-top");
     const myCardTitle = document.createElement("h2");
     myCard.appendChild(myCardTitle);
-    myCardTitle.classList.add("card-title-font");
-    myCardTitle.classList.add("pt-4");
+    const myCardTitleClasses = ["card-title-font", "pt-4"]
+    myCardTitle.classList.add(...myCardTitleClasses);
     const myCardTitleText = document.createTextNode(teddy.name);
     myCardTitle.appendChild(myCardTitleText);
 };
 
 /**
+ *
  * @param response
+ * @returns {Promise<void>}
  */
 const displayHome = async response => {
     await response.json()
@@ -126,7 +126,9 @@ const displayHome = async response => {
 };
 
 /**
+ *
  * @param teddy
+ * @returns {Promise<void>}
  */
 async function displayTeddyPage(teddy) {
     document.title += " | " + teddy.name;
@@ -137,13 +139,6 @@ async function displayTeddyPage(teddy) {
     teddyH1.classList.add("text-highlighted");
 
     const htmlContent = document.getElementById("content");
-
-    /*
-
-    const teddyPictureDiv = document.createElement("div");
-    htmlContent.appendChild(teddyPictureDiv);
-
-     */
 
     const teddyPicture = document.createElement("img");
     teddyPicture.crossOrigin = "anonymous";
@@ -184,7 +179,10 @@ async function displayTeddyPage(teddy) {
     teddyPrice.appendChild(teddyPriceTextValue);
     teddyPriceTextValue.classList.add("number");
 
-    const teddyPriceValue = document.createTextNode(new Intl.NumberFormat("fr-FR", {style: "currency", currency: "EUR"}).format(teddy.price/100).replace("€", "Br")); //Brouzouf
+    const teddyPriceValue = document.createTextNode(new Intl.NumberFormat("fr-FR", {
+        style: "currency",
+        currency: "EUR"
+    }).format(teddy.price / 100).replace("€", "Br")); //Brouzouf
     teddyPriceTextValue.appendChild(teddyPriceValue);
 
     const teddyPriceLabelTwo = document.createElement("span");
@@ -204,25 +202,32 @@ async function displayTeddyPage(teddy) {
         const input = document.createElement("input");
         input.type = "radio";
         input.name = "btnradio";
-        input.setAttribute("id", "btnradio" + (i +1) );
+        input.setAttribute("id", "btnradio" + (i + 1));
         input.setAttribute("autocomplete", "off");
         input.classList.add("btn-check");
         teddyColorsOptions.appendChild(input);
         const optionLabel = document.createElement("label");
         const optionLabelClasses = ["btn", "btn-outline-primary"];
-        for (let i1 = 0; i1 < optionLabelClasses.length; i1++) {
-            const theClass = optionLabelClasses[i1];
-            optionLabel.classList.add(theClass);
-        }
-        optionLabel.setAttribute("for", "btnradio" + (i +1))
+        optionLabel.classList.add(...optionLabelClasses);
+        optionLabel.setAttribute("for", "btnradio" + (i + 1))
         const optionLabelDescription = document.createTextNode(option);
         optionLabel.appendChild(optionLabelDescription);
         teddyColorsOptions.appendChild(optionLabel);
     }
+
+    //todo: ajout du bouton de mise au panier
+
+    const toCard = document.createElement("div");
+    const toCardClassList = ["btn", "btn-block", "btn-outline-primary"]
+    toCard.classList.add(...toCardClassList);
+    const toCardText = document.createTextNode("Ajouter au panier");
+    toCard.appendChild(toCardText);
+    htmlContent.appendChild(toCard);
 }
 
 /**
  *
+ * @returns {Promise<void>}
  */
 const process = async () => {
     const homeURL = document.getElementById("homepage");
