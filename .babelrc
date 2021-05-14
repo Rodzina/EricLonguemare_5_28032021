@@ -1,0 +1,18 @@
+{
+  "presets": [
+    ["@parcel/babel-preset-env",
+    {
+      "useBuiltIns": "usage",
+      "corejs": 3
+    }
+    ]
+  ],
+  "plugins": [
+    [
+      "@babel/plugin-syntax-import-assertions",
+      {
+        "version": "^7.12.1"
+      }
+    ]
+  ]
+}

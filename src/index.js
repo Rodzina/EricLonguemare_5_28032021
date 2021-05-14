@@ -1,9 +1,10 @@
-import * as bootstrap from 'bootstrap';
+import * as bootstrap from "bootstrap";
 // Supprimer les modules non utilisés. Si Popover, Tooltip, Dropdown sont utilisés : popper.js sera ajouté.
 //import {Alert, Button, Carousel, Collapse, Dropdown, Modal, Popover, ScrollSpy, Tab, Toast, Tooltip} from "bootstrap";
 // utilise ESM
 //styles personnalisés
-import './assets/scss/custom.scss'; // Import our scss file
+
+//import "./assets/scss/custom.scss";//with {preload: true}; //{preload: true}); // Import our scss file
 import {Teddy} from "./classes/teddy"; // Import our Teddy classes
 import {Client} from "./classes/client"; // Import our Teddy classes
 
@@ -18,19 +19,19 @@ class Cart {
  * @returns {{baseurl: string, url: URL}}
  */
 const getUrl = () => {
-    const url = new URL(location.href), hostname = url.hostname, pathname = url.pathname, protocol = url.protocol,
-        port = url.port;
+    const url = new URL(location.href);
+    const hostname = url.hostname;
+    const pathname = url.pathname;
+    const protocol = url.protocol;
+    const port = url.port;
     let baseUrl = protocol + "//" + hostname;
-    switch ("localhost") {
-        case hostname: // we are on dev host
-            baseUrl += ":" + port;
-            break;
-        default:
-            let segments = pathname.split("/")
-            for (let index = 0; index < segments.length - 1; ++index) {
-                baseUrl += segments[index] + "/"
-            }
-            break;
+    if ("localhost" === hostname) {
+        baseUrl += ":" + port;
+    } else {
+        let segments = pathname.split("/")
+        for (let index = 0; index < segments.length - 1; ++index) {
+            baseUrl += segments[index] + "/"
+        }
     }
     return {
         baseurl: baseUrl,
