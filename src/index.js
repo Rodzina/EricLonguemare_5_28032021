@@ -142,8 +142,6 @@ async function displayTeddyPage (teddy, theCart) {
 
   const teddyPicture = document.createElement('img')
   teddyPicture.crossOrigin = 'anonymous'
-  // teddyPicture.setAttribute("width", "380px");
-  // teddyPicture.setAttribute("height", "250px");
 
   await displayAndStoreTeddyPicture(teddyPicture, teddy, 'f=webp', '+big')
     .catch(err => console.log(err))
@@ -219,7 +217,7 @@ async function displayTeddyPage (teddy, theCart) {
     teddyColorsOptions.appendChild(optionLabel)
   }
 
-  // Add to cart display
+  // Add to cart display and actions
   const toCart = document.createElement('button')
   const toCardClassList = ['btn', 'btn-block', 'btn-outline-success', 'disabled']
   toCart.classList.add(...toCardClassList)
@@ -228,19 +226,41 @@ async function displayTeddyPage (teddy, theCart) {
   const toCardText = document.createTextNode('Ajouter au panier')
   toCart.onclick = function () {
     console.log('Button cart pressed')
-    const preselected = localStorage.getItem('preselected')
-    console.log(preselected)
+    const preselected = JSON.parse(localStorage.getItem('preselected'))
+    const length = theCart.items.length
+    let found = false
 
-    theCart.items.push(preselected)
-    localStorage.setItem('cart', JSON.stringify(theCart))
+    if (length > 0) {
+      for (let i = 0; i < length; i++) {
+        const itemToCheck = JSON.parse(theCart.items[i])
+        if (itemToCheck.id === preselected.id && itemToCheck.color === preselected.color) {
+          console.log('Update quantity for teddy already in cart')
+          itemToCheck.qty += 1
+          theCart.items.splice(i, 1)
+          theCart.items.push(JSON.stringify(itemToCheck))
+          localStorage.setItem('cart', JSON.stringify(theCart))
+          found = true
+          break
+        }
+      }
+      if (!found) {
+        console.log('This product is not in cart')
+        theCart.items.push(JSON.stringify(preselected))
+        localStorage.setItem('cart', JSON.stringify(theCart))
+      }
+    } else {
+      console.log('This product is not in cart and initialize card in localstorage')
+      theCart.items.push(JSON.stringify(preselected))
+      localStorage.setItem('cart', JSON.stringify(theCart))
+    }
+    document.getElementById('addToCart').classList.replace('active', 'disabled')
     localStorage.removeItem('preselected')
-    console.log(theCart)
   }
+
   toCart.appendChild(toCardText)
   htmlContent.appendChild(toCart)
 
   // option selection logic
-  // debug
   const btnRadios = document.forms.clrform.elements.btnradio
   console.log(btnRadios)
 
@@ -253,11 +273,9 @@ async function displayTeddyPage (teddy, theCart) {
   // https://stackoverflow.com/questions/63975754/can-i-have-a-radio-button-group-with-only-one-radio-button-and-have-it-still-fu
   if (btnRadios.length === undefined) {
     // only one option so check it and add it to preselected item
-    console.log('Only one radio button')
     const forceCheckedRadio = document.getElementById('btnradio1')
     forceCheckedRadio.setAttribute('checked', '')
     const preselectedTeddyColor = { id: teddy._id, color: teddy.colors[0], qty: 1 }
-    console.log(preselectedTeddyColor)
     localStorage.setItem('preselected', JSON.stringify(preselectedTeddyColor))
     // allow add to cart button
     document.getElementById('addToCart').classList.replace('disabled', 'active')
@@ -265,10 +283,7 @@ async function displayTeddyPage (teddy, theCart) {
     for (let i = 0, max = btnRadios.length; i < max; i++) {
       // Group of options so wait user choice then check it and add it to preselected item
       btnRadios[i].onclick = function () {
-        console.log('Clicked Value : ' + this.value)
-        console.log('teddyId :' + teddy._id)
         const preselectedTeddyColor = { id: teddy._id, color: this.value, qty: 1 }
-        console.log(preselectedTeddyColor)
         localStorage.setItem('preselected', JSON.stringify(preselectedTeddyColor))
         // allow add to cart button
         document.getElementById('addToCart').classList.replace('disabled', 'active')
@@ -285,9 +300,15 @@ const process = async () => {
   // cart init
   let theCart
   if (localStorage.getItem('cart') === null) {
+    console.log('No Cart, init it')
     theCart = new Cart()
   } else {
-    theCart = localStorage.getItem('cart')
+    try {
+      console.log('One cart exist, get it')
+      theCart = JSON.parse(localStorage.getItem('cart'))
+    } catch (e) {
+      console.log('Error : Cant get cart' + e)
+    }
   }
   const homeURL = document.getElementById('homepage')
   homeURL.href = getUrl().baseurl
