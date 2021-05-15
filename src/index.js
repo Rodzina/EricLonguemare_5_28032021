@@ -138,6 +138,9 @@ async function displayTeddyPage(teddy) {
     teddyH1.innerText = teddy.name;
     teddyH1.classList.add("text-highlighted");
 
+    //cart init
+    const  theCart = new Cart();
+
     const htmlContent = document.getElementById("content");
 
     const teddyPicture = document.createElement("img");
@@ -192,6 +195,8 @@ async function displayTeddyPage(teddy) {
     const teddyPriceLabelTextTwo = document.createTextNode("Maintenant Stp ;)")
     teddyPriceLabelTwo.appendChild(teddyPriceLabelTextTwo);
 
+    // Option selection display
+
     const teddyColorsOptions = document.createElement("form");
     teddyColorsOptions.classList.add("btn-group");
     teddyColorsOptions.setAttribute("role", "group")
@@ -217,42 +222,59 @@ async function displayTeddyPage(teddy) {
         teddyColorsOptions.appendChild(optionLabel);
     }
 
-    //todo: ajout du bouton de mise au panier
-
-    const toCard = document.createElement("div");
-    const toCardClassList = ["btn", "btn-block", "btn-outline-primary"]
-    toCard.classList.add(...toCardClassList);
+    // Add to cart display
+    const toCart = document.createElement("button");
+    const toCardClassList = ["btn", "btn-block", "btn-outline-success", "disabled"]
+    toCart.classList.add(...toCardClassList);
+    toCart.setAttribute("type", "button");
+    toCart.setAttribute("id", "addToCart");
     const toCardText = document.createTextNode("Ajouter au panier");
-    toCard.appendChild(toCardText);
-    htmlContent.appendChild(toCard);
+    toCart.onclick = function () {
+        console.log("Button cart pressed");
+        const preselected = localStorage.getItem("preselected");
+        theCart.items.push(preselected);
+        console.log(theCart);
+    };
+    toCart.appendChild(toCardText);
+    htmlContent.appendChild(toCart);
 
+    // option selection logic
+    //debug
     const btnRadios = document.forms["clrform"].elements["btnradio"];
     console.log(btnRadios);
 
-
+    // remove selected option on page start (or reload)
     if (localStorage.getItem("preselected")) {
         localStorage.removeItem("preselected");
     }
 
+    //handle selection event
     //https://stackoverflow.com/questions/63975754/can-i-have-a-radio-button-group-with-only-one-radio-button-and-have-it-still-fu
     if (btnRadios.length === undefined) {
-        console.log("error only one radio button");
+        // only one option so check it and add it to preselected item
+        console.log("Only one radio button");
         const forceCheckedRadio = document.getElementById("btnradio1");
         forceCheckedRadio.setAttribute("checked", "");
         const preselectedTeddyColor = {"id": teddy._id, "color": teddy.colors[0]};
         console.log(preselectedTeddyColor);
         localStorage.setItem("preselected", JSON.stringify(preselectedTeddyColor));
+        //allow add to cart button
+        document.getElementById("addToCart").classList.replace("disabled", "active");
     } else {
         for (let i = 0, max = btnRadios.length; i < max; i++) {
+            // Group of options so wait user choice then check it and add it to preselected item
             btnRadios[i].onclick = function () {
                 console.log("Clicked Value : " + this.value);
                 console.log("teddyId :" + teddy._id);
                 const preselectedTeddyColor = {"id": teddy._id, "color": this.value};
                 console.log(preselectedTeddyColor);
                 localStorage.setItem("preselected", JSON.stringify(preselectedTeddyColor));
+                //allow add to cart button
+                document.getElementById("addToCart").classList.replace("disabled", "active");
             }
         }
     }
+
 }
 
 /**
