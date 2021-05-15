@@ -192,9 +192,10 @@ async function displayTeddyPage(teddy) {
     const teddyPriceLabelTextTwo = document.createTextNode("Maintenant Stp ;)")
     teddyPriceLabelTwo.appendChild(teddyPriceLabelTextTwo);
 
-    const teddyColorsOptions = document.createElement("div");
+    const teddyColorsOptions = document.createElement("form");
     teddyColorsOptions.classList.add("btn-group");
     teddyColorsOptions.setAttribute("role", "group")
+    teddyColorsOptions.setAttribute("name", "clrform");
     htmlContent.appendChild(teddyColorsOptions);
 
     for (let i = 0; i < teddy.colors.length; i++) {
@@ -204,6 +205,7 @@ async function displayTeddyPage(teddy) {
         input.name = "btnradio";
         input.setAttribute("id", "btnradio" + (i + 1));
         input.setAttribute("autocomplete", "off");
+        input.setAttribute("value", option);
         input.classList.add("btn-check");
         teddyColorsOptions.appendChild(input);
         const optionLabel = document.createElement("label");
@@ -223,6 +225,34 @@ async function displayTeddyPage(teddy) {
     const toCardText = document.createTextNode("Ajouter au panier");
     toCard.appendChild(toCardText);
     htmlContent.appendChild(toCard);
+
+    const btnRadios = document.forms["clrform"].elements["btnradio"];
+    console.log(btnRadios);
+
+
+    if (localStorage.getItem("preselected")) {
+        localStorage.removeItem("preselected");
+    }
+
+    //https://stackoverflow.com/questions/63975754/can-i-have-a-radio-button-group-with-only-one-radio-button-and-have-it-still-fu
+    if (btnRadios.length === undefined) {
+        console.log("error only one radio button");
+        const forceCheckedRadio = document.getElementById("btnradio1");
+        forceCheckedRadio.setAttribute("checked", "");
+        const preselectedTeddyColor = {"id": teddy._id, "color": teddy.colors[0]};
+        console.log(preselectedTeddyColor);
+        localStorage.setItem("preselected", JSON.stringify(preselectedTeddyColor));
+    } else {
+        for (let i = 0, max = btnRadios.length; i < max; i++) {
+            btnRadios[i].onclick = function () {
+                console.log("Clicked Value : " + this.value);
+                console.log("teddyId :" + teddy._id);
+                const preselectedTeddyColor = {"id": teddy._id, "color": this.value};
+                console.log(preselectedTeddyColor);
+                localStorage.setItem("preselected", JSON.stringify(preselectedTeddyColor));
+            }
+        }
+    }
 }
 
 /**
