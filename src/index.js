@@ -343,7 +343,7 @@ const process = async () => {
   const homeURL = document.getElementById('homepage')
   homeURL.href = getUrl().baseurl
   const cartURL = document.getElementById('cartpage')
-  cartURL.href = getUrl().baseurl + '/panier.html?panier'
+  cartURL.href = getUrl().baseurl.replace(/\/$/, '') + '/panier.html?panier'
   const entryPoint = 'https://polar-retreat-13131.herokuapp.com/api/teddies/'
   const params = new URLSearchParams(location.search)
 
