@@ -9,7 +9,9 @@ import { Teddy } from './classes/teddy' // Import our Teddy classes
 import { Client } from './classes/client' // Import our Teddy classes
 
 class Cart {
-  constructor () {
+  constructor (total, totalAmount) {
+    this.total = total
+    this.totalAmount = totalAmount
     this.items = []
   }
 }
@@ -86,7 +88,6 @@ const displayTeddyCard = async teddy => {
   myCard.classList.add(...className)
   myCard.href = getUrl().url + 'teddy.html' + '?' + 'id=' + teddy._id
   myCard.addEventListener('click', function () {
-    sessionStorage.setItem('_id', teddy._id)
   })
   myHtmlContent.appendChild(myCard)
   const myCardPicture = document.createElement('img')
@@ -121,6 +122,7 @@ const displayHome = async response => {
         displayTeddyCard(myTeddy)
         myTeddy.store() // put item in local storage.
       }
+      //  document.getElementById('cartpage').href = getUrl().url + 'panier.html' + '?' + 'panier'
     })
 }
 
@@ -238,7 +240,6 @@ async function displayTeddyPage (teddy, theCart) {
           itemToCheck.qty += 1
           theCart.items.splice(i, 1)
           theCart.items.push(JSON.stringify(itemToCheck))
-          localStorage.setItem('cart', JSON.stringify(theCart))
           found = true
           break
         }
@@ -246,13 +247,14 @@ async function displayTeddyPage (teddy, theCart) {
       if (!found) {
         console.log('This product is not in cart')
         theCart.items.push(JSON.stringify(preselected))
-        localStorage.setItem('cart', JSON.stringify(theCart))
       }
     } else {
-      console.log('This product is not in cart and initialize card in localstorage')
+      console.log('This product is not in cart and initialize cart in localstorage')
       theCart.items.push(JSON.stringify(preselected))
-      localStorage.setItem('cart', JSON.stringify(theCart))
     }
+    theCart.total += 1
+    theCart.totalAmount += preselected.unitPrice
+    localStorage.setItem('cart', JSON.stringify(theCart))
     document.getElementById('addToCart').classList.replace('active', 'disabled')
     localStorage.removeItem('preselected')
   }
@@ -275,7 +277,7 @@ async function displayTeddyPage (teddy, theCart) {
     // only one option so check it and add it to preselected item
     const forceCheckedRadio = document.getElementById('btnradio1')
     forceCheckedRadio.setAttribute('checked', '')
-    const preselectedTeddyColor = { id: teddy._id, color: teddy.colors[0], qty: 1 }
+    const preselectedTeddyColor = { id: teddy._id, color: teddy.colors[0], qty: 1, unitPrice: teddy.price, name: teddy.name }
     localStorage.setItem('preselected', JSON.stringify(preselectedTeddyColor))
     // allow add to cart button
     document.getElementById('addToCart').classList.replace('disabled', 'active')
@@ -283,13 +285,41 @@ async function displayTeddyPage (teddy, theCart) {
     for (let i = 0, max = btnRadios.length; i < max; i++) {
       // Group of options so wait user choice then check it and add it to preselected item
       btnRadios[i].onclick = function () {
-        const preselectedTeddyColor = { id: teddy._id, color: this.value, qty: 1 }
+        const preselectedTeddyColor = { id: teddy._id, color: this.value, qty: 1, unitPrice: teddy.price, name: teddy.name }
         localStorage.setItem('preselected', JSON.stringify(preselectedTeddyColor))
         // allow add to cart button
         document.getElementById('addToCart').classList.replace('disabled', 'active')
       }
     }
   }
+}
+
+/**
+ *
+ * @param theCart
+ */
+function displayCartPage (theCart) {
+  console.log(theCart)
+  const htmlContent = document.getElementById('content')
+  const myBlockQuote = document.createElement('blockquote')
+  myBlockQuote.innerText = 'Article(s) : ' + theCart.total + ' - ' + 'Montant total : ' + theCart.totalAmount / 100
+  const length = theCart.items.length
+  console.log(length)
+  for (let i = 0; i < length; i++) {
+    //  do something
+    const itemToDisplay = JSON.parse(theCart.items[i])
+    const myParagraph = document.createElement('p')
+    myParagraph.innerText = 'id :' +
+      itemToDisplay.id + ' - ' +
+      itemToDisplay.name + ' - ' +
+      itemToDisplay.color + ' - ' +
+      itemToDisplay.qty + ' - ' +
+      itemToDisplay.unitPrice / 100 + ' - ' +
+      (itemToDisplay.unitPrice / 100) * itemToDisplay.qty
+    myBlockQuote.appendChild(myParagraph)
+  }
+
+  htmlContent.appendChild(myBlockQuote)
 }
 
 /**
@@ -301,7 +331,7 @@ const process = async () => {
   let theCart
   if (localStorage.getItem('cart') === null) {
     console.log('No Cart, init it')
-    theCart = new Cart()
+    theCart = new Cart(0, 0)
   } else {
     try {
       console.log('One cart exist, get it')
@@ -312,12 +342,22 @@ const process = async () => {
   }
   const homeURL = document.getElementById('homepage')
   homeURL.href = getUrl().baseurl
+  const cartURL = document.getElementById('cartpage')
+  cartURL.href = getUrl().baseurl + '/panier.html?panier'
   const entryPoint = 'https://polar-retreat-13131.herokuapp.com/api/teddies/'
   const params = new URLSearchParams(location.search)
-  if (!params.has('id')) {
+
+  if (!params.has('id') && !params.has('panier')) {
     fetchFromAPI(entryPoint)
       .then(response => displayHome(response))
-  } else {
+  }
+
+  if (params.has('panier')) {
+    // do something
+    displayCartPage(theCart)
+  }
+
+  if (params.has('id')) {
     const id = params.get('id')
     let teddy
     if (id in localStorage) {
@@ -328,7 +368,6 @@ const process = async () => {
         .then(value => JSON.stringify(value))
       teddy = await Teddy.createFromJSON(teddyInfo)
     }
-
     await teddy.store()
     await displayTeddyPage(teddy, theCart)
   }

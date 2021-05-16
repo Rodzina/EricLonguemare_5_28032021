@@ -1,10 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Title</title>
+  <link rel="preload" href="./assets/scss/custom.scss" as="style">
+  <link rel="preload" href="./index.js" as="script">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Orinoco | Teddies | Panier</title>
+  <meta name="keywords" content="panier">
+  <meta name="description"
+        content="Vos ours en peluche.">
+  <link rel="stylesheet" href="./assets/scss/custom.scss">
 </head>
-<body>
+<body class="text-center">
+<header class="mb-auto">
+  <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    <div class="float-md-start mb-0">Orinoco</div>
+    <nav class="nav nav-masthead justify-content-center float-md-end">
+      <a id="homepage" class="nav-link" href="/">Accueil</a>
+      <a id="cartpage" class="nav-link active" aria-current="page" href="./panier.html">Panier</a>
+    </nav>
+  </div>
+</header>
+<main>
+  <h1 class="display-5 text-center card-title-font">Panier</h1>
+  <div>
+    <div id="content"></div>
+  </div>
+</main>
+<footer class="bg-dark text-center text-white">
+  <!-- Grid container -->
+  <div class="container p-4 pb-0">
+    <!-- Section: Social media -->
+    <section class="mb-4">
+      <!-- Facebook -->
+      <a class="btn btn-floating m-1" href="#" role="button"
+      ><i class="bi-facebook" aria-label="Facebook"></i
+      ></a>
+
+      <!-- Twitter -->
+      <a class="btn btn-floating m-1" href="#" role="button"
+      ><i class="bi-twitter" aria-label="Twitter"></i
+      ></a>
+
+      <!-- Instagram -->
+      <a class="btn btn-floating m-1" href="#" role="button"
+      ><i class="bi-instagram" aria-label="Instagram"></i
+      ></a>
+
+      <!-- Linkedin -->
+      <a class="btn btn-floating m-1" href="#" role="button"
+      ><i class="bi-linkedin" aria-label="Linkedin"></i
+      ></a>
+
+    </section>
+    <!-- Section: Social media -->
+  </div>
+  <!-- Copyright -->
+  <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+  </div>
+  <!-- Copyright -->
+</footer>
+
+<script defer src="./index.js"></script>
 
 </body>
 </html>
