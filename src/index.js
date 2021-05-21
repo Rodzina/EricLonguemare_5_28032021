@@ -9,8 +9,8 @@ import { Teddy } from './classes/teddy' // Import our Teddy classes
 import { Client } from './classes/client' // Import our Teddy classes
 
 class Cart {
-  constructor (total, totalAmount) {
-    this.total = total
+  constructor (totalNumber, totalAmount) {
+    this.totalNumber = totalNumber
     this.totalAmount = totalAmount
     this.items = []
   }
@@ -252,7 +252,7 @@ async function displayTeddyPage (teddy, theCart) {
       console.log('This product is not in cart and initialize cart in localstorage')
       theCart.items.push(JSON.stringify(preselected))
     }
-    theCart.total += 1
+    theCart.totalNumber += 1
     theCart.totalAmount += preselected.unitPrice
     localStorage.setItem('cart', JSON.stringify(theCart))
     document.getElementById('addToCart').classList.replace('active', 'disabled')
@@ -302,7 +302,7 @@ function displayCartPage (theCart) {
   console.log(theCart)
   const htmlContent = document.getElementById('content')
   const myBlockQuote = document.createElement('blockquote')
-  myBlockQuote.innerText = 'Article(s) : ' + theCart.total + ' - ' + 'Montant total : ' + theCart.totalAmount / 100
+  myBlockQuote.innerText = 'Article(s) : ' + theCart.totalNumber + ' - ' + 'Montant total : ' + theCart.totalAmount / 100
   const length = theCart.items.length
   console.log(length)
   for (let i = 0; i < length; i++) {
