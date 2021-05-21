@@ -3,79 +3,9 @@ import * as bootstrap from 'bootstrap'
 // import {Alert, Button, Carousel, Collapse, Dropdown, Modal, Popover, ScrollSpy, Tab, Toast, Tooltip} from "bootstrap";
 // utilise ESM
 // styles personnalisés
-
-// import "./assets/scss/custom.scss";//with {preload: true}; //{preload: true}); // Import our scss file
 import { Teddy } from './classes/teddy' // Import our Teddy classes
-import { Client } from './classes/client' // Import our Teddy classes
-
-class Cart {
-  constructor (totalNumber, totalAmount) {
-    this.totalNumber = totalNumber
-    this.totalAmount = totalAmount
-    this.items = []
-  }
-}
-
-/**
- *
- * @returns {{baseurl: string, url: URL}}
- */
-const getUrl = () => {
-  const url = new URL(location.href)
-  const hostname = url.hostname
-  const pathname = url.pathname
-  const protocol = url.protocol
-  const port = url.port
-  let baseUrl = protocol + '//' + hostname
-  if (hostname === 'localhost') {
-    baseUrl += ':' + port
-  } else {
-    const segments = pathname.split('/')
-    for (let index = 0; index < segments.length - 1; ++index) {
-      baseUrl += segments[index] + '/'
-    }
-  }
-  return {
-    baseurl: baseUrl,
-    url: url
-  }
-}
-
-/**
- * async fetch of API url for JSON response
- * @param entryPoint
- * @returns {Promise<Response>}
- */
-const fetchFromAPI = async entryPoint => await fetch(entryPoint)
-  .catch(err => console.log(err))
-
-/**
- *
- * @param element
- * @param teddy
- * @param params
- * @param suffix
- * @returns {Promise<void>}
- */
-const displayAndStoreTeddyPicture = async (element, teddy, params, suffix) => {
-  if (localStorage.getItem(teddy.imageUrl + suffix) === null) {
-    element.addEventListener('load', function () {
-      const canvas = document.createElement('canvas')
-      const ctx = canvas.getContext('2d')
-      canvas.width = element.width
-      canvas.height = element.height
-      ctx.drawImage(element, 0, 0, element.width, element.height)
-      try {
-        localStorage.setItem(teddy.imageUrl + suffix, JSON.stringify(canvas.toDataURL('image/webp')))
-      } catch (e) {
-        console.log('Storage failed: ' + e)
-      }
-    }, false)
-    element.src = teddy.imageUrl.replace(/^http:\/\//i, 'https://') + '?' + params
-  } else {
-    element.src = JSON.parse(localStorage.getItem(teddy.imageUrl + suffix))
-  }
-}
+import { Cart } from './classes/cart' // Import our Cart classes
+import { displayAndStorePicture, fetchFromAPI, getUrl } from './helpers/common' // Import helpers
 
 /**
  * build html for one teddie card on home page
@@ -95,7 +25,7 @@ const displayTeddyCard = async teddy => {
   myCardPicture.setAttribute('width', '380px')
   myCardPicture.setAttribute('height', '250px')
 
-  await displayAndStoreTeddyPicture(myCardPicture, teddy, 'w=380&h=380&height=250&f=webp&&crop=cover', '+small')
+  await displayAndStorePicture(myCardPicture, teddy.imageUrl, 'w=380&h=380&height=250&f=webp&crop=cover', '+small')
     .catch(err => console.log(err))
 
   myCardPicture.alt = teddy.name
@@ -122,7 +52,6 @@ const displayHome = async response => {
         displayTeddyCard(myTeddy)
         myTeddy.store() // put item in local storage.
       }
-      //  document.getElementById('cartpage').href = getUrl().url + 'panier.html' + '?' + 'panier'
     })
 }
 
@@ -132,7 +61,7 @@ const displayHome = async response => {
  * @param theCart
  * @returns {Promise<void>}
  */
-async function displayTeddyPage (teddy, theCart) {
+const displayTeddyPage = async function (teddy, theCart) {
   document.title += ' | ' + teddy.name
   document.head.children.namedItem('keywords').content += ', ' + teddy.name
   document.head.children.namedItem('description').content += ' ' + teddy.name + '.'
@@ -145,7 +74,7 @@ async function displayTeddyPage (teddy, theCart) {
   const teddyPicture = document.createElement('img')
   teddyPicture.crossOrigin = 'anonymous'
 
-  await displayAndStoreTeddyPicture(teddyPicture, teddy, 'f=webp', '+big')
+  await displayAndStorePicture(teddyPicture, teddy.imageUrl, 'f=webp', '+big')
     .catch(err => console.log(err))
   teddyPicture.alt = teddy.name
   teddyPicture.classList.add('card-img-top')
@@ -197,7 +126,7 @@ async function displayTeddyPage (teddy, theCart) {
   const teddyColorsOptions = document.createElement('form')
   teddyColorsOptions.classList.add('btn-group')
   teddyColorsOptions.setAttribute('role', 'group')
-  teddyColorsOptions.setAttribute('name', 'clrform')
+  teddyColorsOptions.setAttribute('name', 'colorform')
   htmlContent.appendChild(teddyColorsOptions)
 
   for (let i = 0; i < teddy.colors.length; i++) {
@@ -228,42 +157,53 @@ async function displayTeddyPage (teddy, theCart) {
   const toCardText = document.createTextNode('Ajouter au panier')
   toCart.onclick = function () {
     console.log('Button cart pressed')
-    const preselected = JSON.parse(localStorage.getItem('preselected'))
-    const length = theCart.items.length
-    let found = false
+    const preselectedStorage = localStorage.getItem('preselected')
+    if (!preselectedStorage) {
+      console.error('No preselected item')
+      return
+    }
 
-    if (length > 0) {
-      for (let i = 0; i < length; i++) {
-        const itemToCheck = JSON.parse(theCart.items[i])
-        if (itemToCheck.id === preselected.id && itemToCheck.color === preselected.color) {
-          console.log('Update quantity for teddy already in cart')
-          itemToCheck.qty += 1
-          theCart.items.splice(i, 1)
-          theCart.items.push(JSON.stringify(itemToCheck))
-          found = true
-          break
+    try {
+      const preselected = JSON.parse(preselectedStorage)
+
+      const length = theCart.items.length
+      let isFound = false
+
+      if (length > 0) {
+        for (let i = 0; i < length; i++) {
+          const itemToCheck = JSON.parse(theCart.items[i])
+          if (itemToCheck.id === preselected.id && itemToCheck.color === preselected.color) {
+            console.log('Update quantity for teddy already in cart')
+            itemToCheck.qty += 1
+            theCart.items.splice(i, 1)
+            theCart.items.push(JSON.stringify(itemToCheck))
+            isFound = true
+            break
+          }
         }
-      }
-      if (!found) {
-        console.log('This product is not in cart')
+        if (!isFound) {
+          console.log('This product is not in cart')
+          theCart.items.push(JSON.stringify(preselected))
+        }
+      } else {
+        console.log('This product is not in cart and initialize cart in localstorage')
         theCart.items.push(JSON.stringify(preselected))
       }
-    } else {
-      console.log('This product is not in cart and initialize cart in localstorage')
-      theCart.items.push(JSON.stringify(preselected))
+      theCart.totalNumber += 1
+      theCart.totalAmount += preselected.unitPrice
+      localStorage.setItem('cart', JSON.stringify(theCart))
+      document.getElementById('addToCart').classList.replace('active', 'disabled')
+      localStorage.removeItem('preselected')
+    } catch (e) {
+      console.error(e)
     }
-    theCart.totalNumber += 1
-    theCart.totalAmount += preselected.unitPrice
-    localStorage.setItem('cart', JSON.stringify(theCart))
-    document.getElementById('addToCart').classList.replace('active', 'disabled')
-    localStorage.removeItem('preselected')
   }
 
   toCart.appendChild(toCardText)
   htmlContent.appendChild(toCart)
 
   // option selection logic
-  const btnRadios = document.forms.clrform.elements.btnradio
+  const btnRadios = document.forms.colorform.elements.btnradio
   console.log(btnRadios)
 
   // remove selected option on page start (or reload)
@@ -277,7 +217,14 @@ async function displayTeddyPage (teddy, theCart) {
     // only one option so check it and add it to preselected item
     const forceCheckedRadio = document.getElementById('btnradio1')
     forceCheckedRadio.setAttribute('checked', '')
-    const preselectedTeddyColor = { id: teddy._id, color: teddy.colors[0], qty: 1, unitPrice: teddy.price, name: teddy.name }
+    const preselectedTeddyColor = {
+      id: teddy._id,
+      color: teddy.colors[0],
+      qty: 1,
+      unitPrice: teddy.price,
+      name: teddy.name,
+      imageUrl: teddy.imageUrl
+    }
     localStorage.setItem('preselected', JSON.stringify(preselectedTeddyColor))
     // allow add to cart button
     document.getElementById('addToCart').classList.replace('disabled', 'active')
@@ -285,7 +232,14 @@ async function displayTeddyPage (teddy, theCart) {
     for (let i = 0, max = btnRadios.length; i < max; i++) {
       // Group of options so wait user choice then check it and add it to preselected item
       btnRadios[i].onclick = function () {
-        const preselectedTeddyColor = { id: teddy._id, color: this.value, qty: 1, unitPrice: teddy.price, name: teddy.name }
+        const preselectedTeddyColor = {
+          id: teddy._id,
+          color: this.value,
+          qty: 1,
+          unitPrice: teddy.price,
+          name: teddy.name,
+          imageUrl: teddy.imageUrl
+        }
         localStorage.setItem('preselected', JSON.stringify(preselectedTeddyColor))
         // allow add to cart button
         document.getElementById('addToCart').classList.replace('disabled', 'active')
@@ -298,7 +252,7 @@ async function displayTeddyPage (teddy, theCart) {
  *
  * @param theCart
  */
-function displayCartPage (theCart) {
+const displayCartPage = async theCart => {
   console.log(theCart)
   const htmlContent = document.getElementById('content')
   const myBlockQuote = document.createElement('blockquote')
@@ -306,28 +260,24 @@ function displayCartPage (theCart) {
   myBlockQuote.innerText = 'Article(s) : ' + theCart.totalNumber + ' - ' + 'Montant total : ' + theCart.totalAmount / 100
   const length = theCart.items.length
   console.log(length)
-  /*
-  for (let i = 0; i < length; i++) {
-    //  do something
-    const itemToDisplay = JSON.parse(theCart.items[i])
-    const myParagraph = document.createElement('p')
-    myParagraph.innerText = 'id :' +
-      itemToDisplay.id + ' - ' +
-      itemToDisplay.name + ' - ' +
-      itemToDisplay.color + ' - ' +
-      itemToDisplay.qty + ' - ' +
-      itemToDisplay.unitPrice / 100 + ' - ' +
-      (itemToDisplay.unitPrice / 100) * itemToDisplay.qty
-    myBlockQuote.appendChild(myParagraph)
-  }
-  */
   for (let i = 0; i < length; i++) {
     const itemToDisplay2 = JSON.parse(theCart.items[i])
+    // const teddy =
     const myCartProductDiv = document.createElement('div')
     const myClass = ['card', 'd-flex']
     const myUl = document.createElement('ul')
     myCartProductDiv.classList.add(...myClass)
     myCartProductDiv.appendChild(myUl)
+    const teddyPictureElement = document.createElement('img')
+    console.log('display 2: ')
+    console.log(itemToDisplay2.imageUrl)
+    teddyPictureElement.crossOrigin = 'anonymous'
+    teddyPictureElement.setAttribute('width', '190px')
+    teddyPictureElement.setAttribute('height', '125px')
+    await displayAndStorePicture(teddyPictureElement, itemToDisplay2.imageUrl, 'w=190&h=190&height=125&f=webp&crop=cover', '+thumb')
+      .catch(err => console.log(err))
+    // teddyPictureElement.src = itemToDisplay2.imageUrl
+    myUl.appendChild(teddyPictureElement)
     const myLi = document.createElement('li')
     myUl.appendChild(myLi)
     myLi.innerText = 'id :' + itemToDisplay2.id
@@ -346,15 +296,6 @@ function displayCartPage (theCart) {
     const myLi7 = document.createElement('li')
     myUl.appendChild(myLi7)
     myLi7.innerText = ((itemToDisplay2.unitPrice / 100) * itemToDisplay2.qty).toString()
-    /*
-    myCartProductDiv.innerText = 'id :' +
-      itemToDisplay2.id + ' - ' +
-      itemToDisplay2.name + ' - ' +
-      itemToDisplay2.color + ' - ' +
-      itemToDisplay2.qty + ' - ' +
-      itemToDisplay2.unitPrice / 100 + ' - ' +
-      (itemToDisplay2.unitPrice / 100) * itemToDisplay2.qty
-     */
     myCartContent.appendChild(myCartProductDiv)
   }
   htmlContent.appendChild(myBlockQuote)
