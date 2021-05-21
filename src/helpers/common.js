@@ -58,3 +58,22 @@ export const displayAndStorePicture = async (element, url, params, suffix) => {
     element.src = JSON.parse(localStorage.getItem(url + suffix))
   }
 }
+
+/**
+ *
+ * @param teddy
+ * @param selectedColor
+ */
+export const setPreselectedItem = async (teddy, selectedColor) => {
+  const preselectedTeddyColor = {
+    id: teddy._id,
+    color: selectedColor,
+    qty: 1,
+    unitPrice: teddy.price,
+    name: teddy.name,
+    imageUrl: teddy.imageUrl
+  }
+  localStorage.setItem('preselected', JSON.stringify(preselectedTeddyColor))
+  // allow add to cart button
+  document.getElementById('addToCart').classList.replace('disabled', 'active')
+}

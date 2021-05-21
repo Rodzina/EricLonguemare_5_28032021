@@ -5,7 +5,7 @@ import * as bootstrap from 'bootstrap'
 // styles personnalisés
 import { Teddy } from './classes/teddy' // Import our Teddy classes
 import { Cart } from './classes/cart' // Import our Cart classes
-import { displayAndStorePicture, fetchFromAPI, getUrl } from './helpers/common' // Import helpers
+import { displayAndStorePicture, fetchFromAPI, getUrl, setPreselectedItem } from './helpers/common' // Import helpers
 
 /**
  * build html for one teddie card on home page
@@ -155,6 +155,7 @@ const displayTeddyPage = async function (teddy, theCart) {
   toCart.setAttribute('type', 'button')
   toCart.setAttribute('id', 'addToCart')
   const toCardText = document.createTextNode('Ajouter au panier')
+  // handle add to cart button
   toCart.onclick = function () {
     console.log('Button cart pressed')
     const preselectedStorage = localStorage.getItem('preselected')
@@ -186,12 +187,13 @@ const displayTeddyPage = async function (teddy, theCart) {
           theCart.items.push(JSON.stringify(preselected))
         }
       } else {
-        console.log('This product is not in cart and initialize cart in localstorage')
+        console.log('Initialize cart in localstorage and push first item')
         theCart.items.push(JSON.stringify(preselected))
       }
       theCart.totalNumber += 1
       theCart.totalAmount += preselected.unitPrice
       localStorage.setItem('cart', JSON.stringify(theCart))
+
       document.getElementById('addToCart').classList.replace('active', 'disabled')
       localStorage.removeItem('preselected')
     } catch (e) {
@@ -214,35 +216,18 @@ const displayTeddyPage = async function (teddy, theCart) {
   // handle selection event
   // https://stackoverflow.com/questions/63975754/can-i-have-a-radio-button-group-with-only-one-radio-button-and-have-it-still-fu
   if (btnRadios.length === undefined) {
-    // only one option so check it and add it to preselected item
+    // item  has only one option so check it and add it to preselected item
     const forceCheckedRadio = document.getElementById('btnradio1')
     forceCheckedRadio.setAttribute('checked', '')
-    const preselectedTeddyColor = {
-      id: teddy._id,
-      color: teddy.colors[0],
-      qty: 1,
-      unitPrice: teddy.price,
-      name: teddy.name,
-      imageUrl: teddy.imageUrl
+    // setPreselectedItem
+    forceCheckedRadio.onclick = async (event) => {
+      await setPreselectedItem(teddy, event.target.value)
     }
-    localStorage.setItem('preselected', JSON.stringify(preselectedTeddyColor))
-    // allow add to cart button
-    document.getElementById('addToCart').classList.replace('disabled', 'active')
   } else {
     for (let i = 0, max = btnRadios.length; i < max; i++) {
       // Group of options so wait user choice then check it and add it to preselected item
-      btnRadios[i].onclick = function () {
-        const preselectedTeddyColor = {
-          id: teddy._id,
-          color: this.value,
-          qty: 1,
-          unitPrice: teddy.price,
-          name: teddy.name,
-          imageUrl: teddy.imageUrl
-        }
-        localStorage.setItem('preselected', JSON.stringify(preselectedTeddyColor))
-        // allow add to cart button
-        document.getElementById('addToCart').classList.replace('disabled', 'active')
+      btnRadios[i].onclick = async (event) => {
+        await setPreselectedItem(teddy, event.target.value)
       }
     }
   }
@@ -261,8 +246,7 @@ const displayCartPage = async theCart => {
   const length = theCart.items.length
   console.log(length)
   for (let i = 0; i < length; i++) {
-    const itemToDisplay2 = JSON.parse(theCart.items[i])
-    // const teddy =
+    const itemToDisplay = JSON.parse(theCart.items[i])
     const myCartProductDiv = document.createElement('div')
     const myClass = ['card', 'd-flex']
     const myUl = document.createElement('ul')
@@ -270,32 +254,31 @@ const displayCartPage = async theCart => {
     myCartProductDiv.appendChild(myUl)
     const teddyPictureElement = document.createElement('img')
     console.log('display 2: ')
-    console.log(itemToDisplay2.imageUrl)
+    console.log(itemToDisplay.imageUrl)
     teddyPictureElement.crossOrigin = 'anonymous'
     teddyPictureElement.setAttribute('width', '190px')
     teddyPictureElement.setAttribute('height', '125px')
-    await displayAndStorePicture(teddyPictureElement, itemToDisplay2.imageUrl, 'w=190&h=190&height=125&f=webp&crop=cover', '+thumb')
+    await displayAndStorePicture(teddyPictureElement, itemToDisplay.imageUrl, 'w=190&h=190&height=125&f=webp&crop=cover', '+thumb')
       .catch(err => console.log(err))
-    // teddyPictureElement.src = itemToDisplay2.imageUrl
     myUl.appendChild(teddyPictureElement)
     const myLi = document.createElement('li')
     myUl.appendChild(myLi)
-    myLi.innerText = 'id :' + itemToDisplay2.id
+    myLi.innerText = 'id :' + itemToDisplay.id
     const myLi2 = document.createElement('li')
     myUl.appendChild(myLi2)
-    myLi2.innerText = itemToDisplay2.name
+    myLi2.innerText = itemToDisplay.name
     const myLi3 = document.createElement('li')
     myUl.appendChild(myLi3)
-    myLi3.innerText = itemToDisplay2.color
+    myLi3.innerText = itemToDisplay.color
     const myLi5 = document.createElement('li')
     myUl.appendChild(myLi5)
-    myLi5.innerText = '-  ' + itemToDisplay2.qty + '  +'
+    myLi5.innerText = '-  ' + itemToDisplay.qty + '  +'
     const myLi6 = document.createElement('li')
     myUl.appendChild(myLi6)
-    myLi6.innerText = (itemToDisplay2.unitPrice / 100).toString()
+    myLi6.innerText = (itemToDisplay.unitPrice / 100).toString()
     const myLi7 = document.createElement('li')
     myUl.appendChild(myLi7)
-    myLi7.innerText = ((itemToDisplay2.unitPrice / 100) * itemToDisplay2.qty).toString()
+    myLi7.innerText = ((itemToDisplay.unitPrice / 100) * itemToDisplay.qty).toString()
     myCartContent.appendChild(myCartProductDiv)
   }
   htmlContent.appendChild(myBlockQuote)
@@ -334,7 +317,7 @@ const process = async () => {
 
   if (params.has('panier')) {
     // do something
-    displayCartPage(theCart)
+    await displayCartPage(theCart)
   }
 
   if (params.has('id')) {
