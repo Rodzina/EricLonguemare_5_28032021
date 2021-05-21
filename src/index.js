@@ -302,9 +302,11 @@ function displayCartPage (theCart) {
   console.log(theCart)
   const htmlContent = document.getElementById('content')
   const myBlockQuote = document.createElement('blockquote')
+  const myCartContent = document.createElement('div')
   myBlockQuote.innerText = 'Article(s) : ' + theCart.totalNumber + ' - ' + 'Montant total : ' + theCart.totalAmount / 100
   const length = theCart.items.length
   console.log(length)
+  /*
   for (let i = 0; i < length; i++) {
     //  do something
     const itemToDisplay = JSON.parse(theCart.items[i])
@@ -318,8 +320,45 @@ function displayCartPage (theCart) {
       (itemToDisplay.unitPrice / 100) * itemToDisplay.qty
     myBlockQuote.appendChild(myParagraph)
   }
-
+  */
+  for (let i = 0; i < length; i++) {
+    const itemToDisplay2 = JSON.parse(theCart.items[i])
+    const myCartProductDiv = document.createElement('div')
+    const myClass = ['card', 'd-flex']
+    const myUl = document.createElement('ul')
+    myCartProductDiv.classList.add(...myClass)
+    myCartProductDiv.appendChild(myUl)
+    const myLi = document.createElement('li')
+    myUl.appendChild(myLi)
+    myLi.innerText = 'id :' + itemToDisplay2.id
+    const myLi2 = document.createElement('li')
+    myUl.appendChild(myLi2)
+    myLi2.innerText = itemToDisplay2.name
+    const myLi3 = document.createElement('li')
+    myUl.appendChild(myLi3)
+    myLi3.innerText = itemToDisplay2.color
+    const myLi5 = document.createElement('li')
+    myUl.appendChild(myLi5)
+    myLi5.innerText = '-  ' + itemToDisplay2.qty + '  +'
+    const myLi6 = document.createElement('li')
+    myUl.appendChild(myLi6)
+    myLi6.innerText = (itemToDisplay2.unitPrice / 100).toString()
+    const myLi7 = document.createElement('li')
+    myUl.appendChild(myLi7)
+    myLi7.innerText = ((itemToDisplay2.unitPrice / 100) * itemToDisplay2.qty).toString()
+    /*
+    myCartProductDiv.innerText = 'id :' +
+      itemToDisplay2.id + ' - ' +
+      itemToDisplay2.name + ' - ' +
+      itemToDisplay2.color + ' - ' +
+      itemToDisplay2.qty + ' - ' +
+      itemToDisplay2.unitPrice / 100 + ' - ' +
+      (itemToDisplay2.unitPrice / 100) * itemToDisplay2.qty
+     */
+    myCartContent.appendChild(myCartProductDiv)
+  }
   htmlContent.appendChild(myBlockQuote)
+  htmlContent.appendChild(myCartContent)
 }
 
 /**
