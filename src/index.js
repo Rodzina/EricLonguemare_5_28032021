@@ -5,7 +5,7 @@ import * as bootstrap from 'bootstrap'
 // styles personnalisés
 import { Teddy } from './classes/teddy' // Import our Teddy classes
 import { Cart } from './classes/cart' // Import our Cart classes
-import { displayAndStorePicture, fetchFromAPI, getUrl, setPreselectedItem, stringify, parse } from './helpers/common' // Import helpers
+import { displayAndStorePicture, fetchFromAPI, getUrl, setPreselectedItem, stringify, parse, updateColorsObject } from './helpers/common' // Import helpers
 
 /**
  * build html for one teddie card on home page
@@ -129,7 +129,7 @@ const displayTeddyPage = async function (teddy, theCart) {
   teddyColorsOptions.setAttribute('name', 'colorform')
   htmlContent.appendChild(teddyColorsOptions)
 
-  for (let i = 0; i < teddy.colors.length; i++) {
+  for (let i = 0, max = teddy.colors.length; i < max; i++) {
     const option = teddy.colors[i]
     const input = document.createElement('input')
     input.type = 'radio'
@@ -171,10 +171,13 @@ const displayTeddyPage = async function (teddy, theCart) {
       let isFound = false
 
       if (length > 0) {
-        for (let i = 0; i < length; i++) {
+        for (let i = 0, max = length; i < max; i++) {
           const itemToCheck = parse(theCart.items[i])
-          if (itemToCheck.id === preselected.id && itemToCheck.color === preselected.color) {
+          if (itemToCheck.id === preselected.id) {
             console.log('Update quantity for teddy already in cart')
+            console.log('Objet colors 1:')
+            console.log(itemToCheck.colors)
+            itemToCheck.colors = updateColorsObject(itemToCheck.colors, preselected.color)
             itemToCheck.qty += 1
             theCart.items.splice(i, 1)
             theCart.items.push(stringify(itemToCheck))
@@ -248,7 +251,7 @@ const displayCartPage = async theCart => {
 
   const myArray = []
 
-  for (let i = 0; i < theCart.items.length; i++) {
+  for (let i = 0, max = theCart.items.length; i < max; i++) {
     myArray.push(parse(theCart.items[i]))
   }
 
@@ -264,7 +267,7 @@ const displayCartPage = async theCart => {
   const length = theCart.items.length
   console.log(length)
 
-  for (let i = 0; i < length; i++) {
+  for (let i = 0, max = length; i < max; i++) {
     const itemToDisplay = parse(theCart.items[i])
     const myCartProductDiv = document.createElement('div')
     const myClass = ['card', 'd-flex']
