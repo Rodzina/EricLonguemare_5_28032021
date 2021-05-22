@@ -59,12 +59,33 @@ export const displayAndStorePicture = async (element, url, params, suffix) => {
 
 /**
  *
+ * @param teddyColors
+ * @param selectedColor
+ * @returns {{}}
+ */
+export const initializeColorsObject = (teddyColors, selectedColor) => {
+  // do something
+  const newBuildObject = {}
+  for (let i = 0, max = teddyColors.length; i < max; i++) {
+    if (teddyColors[i] === selectedColor) {
+      newBuildObject[teddyColors[i]] = 1
+    } else {
+      // do something
+      newBuildObject[teddyColors[i]] = 0
+    }
+  }
+  return newBuildObject
+}
+
+/**
+ *
  * @param teddy
  * @param selectedColor
  */
 export const setPreselectedItem = async (teddy, selectedColor) => {
   const preselectedTeddyColor = {
     id: teddy._id,
+    colors: initializeColorsObject(teddy.colors, selectedColor),
     color: selectedColor,
     qty: 1,
     unitPrice: teddy.price,
@@ -74,6 +95,29 @@ export const setPreselectedItem = async (teddy, selectedColor) => {
   localStorage.setItem('preselected', stringify(preselectedTeddyColor))
   // We got a selected color : allow add to cart button
   document.getElementById('addToCart').classList.replace('disabled', 'active')
+}
+
+/**
+ *
+ * @param teddyColors
+ * @param selectedColor
+ * @returns {*}
+ */
+export const updateColorsObject = (teddyColors, selectedColor) => {
+  console.log(teddyColors)
+  console.log(selectedColor)
+  const updatedObject = {}
+
+  for (const [key, value] of Object.entries(teddyColors)) {
+    if (key === selectedColor) {
+      console.log(" à mettre à jour : " + key)
+      updatedObject[key] = value + 1
+    } else {
+      updatedObject[key] = value
+    }
+  }
+  console.log(updatedObject)
+return updatedObject
 }
 
 /**
