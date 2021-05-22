@@ -5,7 +5,7 @@ import * as bootstrap from 'bootstrap'
 // styles personnalisés
 import { Teddy } from './classes/teddy' // Import our Teddy classes
 import { Cart } from './classes/cart' // Import our Cart classes
-import { displayAndStorePicture, fetchFromAPI, getUrl, setPreselectedItem } from './helpers/common' // Import helpers
+import { displayAndStorePicture, fetchFromAPI, getUrl, setPreselectedItem, stringify, parse } from './helpers/common' // Import helpers
 
 /**
  * build html for one teddie card on home page
@@ -165,35 +165,35 @@ const displayTeddyPage = async function (teddy, theCart) {
     }
 
     try {
-      const preselected = JSON.parse(preselectedStorage)
+      const preselected = parse(preselectedStorage)
 
       const length = theCart.items.length
       let isFound = false
 
       if (length > 0) {
         for (let i = 0; i < length; i++) {
-          const itemToCheck = JSON.parse(theCart.items[i])
+          const itemToCheck = parse(theCart.items[i])
           if (itemToCheck.id === preselected.id && itemToCheck.color === preselected.color) {
             console.log('Update quantity for teddy already in cart')
             itemToCheck.qty += 1
             theCart.items.splice(i, 1)
-            theCart.items.push(JSON.stringify(itemToCheck))
+            theCart.items.push(stringify(itemToCheck))
             isFound = true
             break
           }
         }
         if (!isFound) {
           console.log('This product is not in cart')
-          theCart.items.push(JSON.stringify(preselected))
+          theCart.items.push(stringify(preselected))
         }
       } else {
         console.log('Initialize cart in localstorage and push first item')
-        theCart.items.push(JSON.stringify(preselected))
+        theCart.items.push(stringify(preselected))
       }
       theCart.totalNumber += 1
       theCart.totalAmount += preselected.unitPrice
-      localStorage.setItem('cart', JSON.stringify(theCart))
-
+      localStorage.setItem('cart', stringify(theCart))
+      // item has been added to cart - back to color selection
       document.getElementById('addToCart').classList.replace('active', 'disabled')
       localStorage.removeItem('preselected')
     } catch (e) {
@@ -238,23 +238,40 @@ const displayTeddyPage = async function (teddy, theCart) {
  * @param theCart
  */
 const displayCartPage = async theCart => {
-  console.log(theCart)
   const htmlContent = document.getElementById('content')
   const myBlockQuote = document.createElement('blockquote')
   const myCartContent = document.createElement('div')
   myBlockQuote.innerText = 'Article(s) : ' + theCart.totalNumber + ' - ' + 'Montant total : ' + theCart.totalAmount / 100
+
+  // https://www.javascripttutorial.net/javascript-array-sort/
+  // https://stackoverflow.com/questions/6129952/javascript-sort-array-by-two-fields
+
+  const myArray = []
+
+  for (let i = 0; i < theCart.items.length; i++) {
+    myArray.push(parse(theCart.items[i]))
+  }
+
+  myArray.sort(function (x, y) {
+    const a = x.name.toUpperCase()
+    const b = y.name.toUpperCase()
+    return a === b ? 0 : a > b ? 1 : -1
+  })
+
+  console.log(myArray)
+
+  console.log(theCart)
   const length = theCart.items.length
   console.log(length)
+
   for (let i = 0; i < length; i++) {
-    const itemToDisplay = JSON.parse(theCart.items[i])
+    const itemToDisplay = parse(theCart.items[i])
     const myCartProductDiv = document.createElement('div')
     const myClass = ['card', 'd-flex']
     const myUl = document.createElement('ul')
     myCartProductDiv.classList.add(...myClass)
     myCartProductDiv.appendChild(myUl)
     const teddyPictureElement = document.createElement('img')
-    console.log('display 2: ')
-    console.log(itemToDisplay.imageUrl)
     teddyPictureElement.crossOrigin = 'anonymous'
     teddyPictureElement.setAttribute('width', '190px')
     teddyPictureElement.setAttribute('height', '125px')
@@ -298,7 +315,7 @@ const process = async () => {
   } else {
     try {
       console.log('One cart exist, get it')
-      theCart = JSON.parse(localStorage.getItem('cart'))
+      theCart = parse(localStorage.getItem('cart'))
     } catch (e) {
       console.log('Error : Cant get cart' + e)
     }
@@ -328,7 +345,7 @@ const process = async () => {
     } else {
       const teddyInfo = await fetchFromAPI(entryPoint + id)
         .then(response => response.json())
-        .then(value => JSON.stringify(value))
+        .then(value => stringify(value))
       teddy = await Teddy.createFromJSON(teddyInfo)
     }
     await teddy.store()

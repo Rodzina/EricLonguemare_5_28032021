@@ -38,8 +38,6 @@ export const fetchFromAPI = async entryPoint => await fetch(entryPoint)
  * @returns {Promise<void>}
  */
 export const displayAndStorePicture = async (element, url, params, suffix) => {
-  console.log('display 1 : ')
-  console.log(url)
   if (localStorage.getItem(url + suffix) === null) {
     element.addEventListener('load', function () {
       const canvas = document.createElement('canvas')
@@ -55,7 +53,7 @@ export const displayAndStorePicture = async (element, url, params, suffix) => {
     }, false)
     element.src = url.replace(/^http:\/\//i, 'https://') + '?' + params
   } else {
-    element.src = JSON.parse(localStorage.getItem(url + suffix))
+    element.src = parse(localStorage.getItem(url + suffix))
   }
 }
 
@@ -73,7 +71,21 @@ export const setPreselectedItem = async (teddy, selectedColor) => {
     name: teddy.name,
     imageUrl: teddy.imageUrl
   }
-  localStorage.setItem('preselected', JSON.stringify(preselectedTeddyColor))
-  // allow add to cart button
+  localStorage.setItem('preselected', stringify(preselectedTeddyColor))
+  // We got a selected color : allow add to cart button
   document.getElementById('addToCart').classList.replace('disabled', 'active')
 }
+
+/**
+ *
+ * @param string
+ * @returns {string}
+ */
+export const stringify = string => JSON.stringify(string)
+
+/**
+ *
+ * @param json
+ * @returns {any}
+ */
+export const parse = json => JSON.parse(json)
