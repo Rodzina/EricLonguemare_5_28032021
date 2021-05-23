@@ -22,6 +22,7 @@ export const getUrl = () => {
     url: url
   }
 }
+
 /**
  * async fetch of API url for JSON response
  * @param entryPoint
@@ -29,6 +30,7 @@ export const getUrl = () => {
  */
 export const fetchFromAPI = async entryPoint => await fetch(entryPoint)
   .catch(err => console.log(err))
+
 /**
  *
  * @param element
@@ -103,7 +105,7 @@ export const setPreselectedItem = async (teddy, selectedColor) => {
  * @param selectedColor
  * @returns {*}
  */
-export const updateColorsObject = (teddyColors, selectedColor) => {
+export const updateColorsQty = (teddyColors, selectedColor) => {
   console.log(teddyColors)
   console.log(selectedColor)
   const updatedObject = {}
@@ -116,7 +118,7 @@ export const updateColorsObject = (teddyColors, selectedColor) => {
       updatedObject[key] = value
     }
   }
-  console.log(updatedObject)
+console.log(updatedObject)
 return updatedObject
 }
 

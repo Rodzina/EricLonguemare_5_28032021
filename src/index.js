@@ -5,7 +5,7 @@ import * as bootstrap from 'bootstrap'
 // styles personnalisés
 import { Teddy } from './classes/teddy' // Import our Teddy classes
 import { Cart } from './classes/cart' // Import our Cart classes
-import { displayAndStorePicture, fetchFromAPI, getUrl, setPreselectedItem, stringify, parse, updateColorsObject } from './helpers/common' // Import helpers
+import { displayAndStorePicture, fetchFromAPI, getUrl, setPreselectedItem, stringify, parse, updateColorsQty } from './helpers/common' // Import helpers
 
 /**
  * build html for one teddie card on home page
@@ -177,7 +177,7 @@ const displayTeddyPage = async function (teddy, theCart) {
             console.log('Update quantity for teddy already in cart')
             console.log('Objet colors 1:')
             console.log(itemToCheck.colors)
-            itemToCheck.colors = updateColorsObject(itemToCheck.colors, preselected.color)
+            itemToCheck.colors = updateColorsQty(itemToCheck.colors, preselected.color)
             itemToCheck.qty += 1
             theCart.items.splice(i, 1)
             theCart.items.push(stringify(itemToCheck))
@@ -271,33 +271,48 @@ const displayCartPage = async theCart => {
     const itemToDisplay = parse(theCart.items[i])
     const myCartProductDiv = document.createElement('div')
     const myClass = ['card', 'd-flex']
-    const myUl = document.createElement('ul')
     myCartProductDiv.classList.add(...myClass)
-    myCartProductDiv.appendChild(myUl)
     const teddyPictureElement = document.createElement('img')
+    teddyPictureElement.classList.add('card-img-top')
     teddyPictureElement.crossOrigin = 'anonymous'
     teddyPictureElement.setAttribute('width', '190px')
     teddyPictureElement.setAttribute('height', '125px')
     await displayAndStorePicture(teddyPictureElement, itemToDisplay.imageUrl, 'w=190&h=190&height=125&f=webp&crop=cover', '+thumb')
       .catch(err => console.log(err))
-    myUl.appendChild(teddyPictureElement)
-    const myLi = document.createElement('li')
-    myUl.appendChild(myLi)
+    myCartProductDiv.appendChild(teddyPictureElement)
+    const myLi = document.createElement('div')
+    myCartProductDiv.appendChild(myLi)
     myLi.innerText = 'id :' + itemToDisplay.id
-    const myLi2 = document.createElement('li')
-    myUl.appendChild(myLi2)
+    const myLi2 = document.createElement('h2')
+    myLi2.classList.add('card-title-font')
+    myCartProductDiv.appendChild(myLi2)
     myLi2.innerText = itemToDisplay.name
-    const myLi3 = document.createElement('li')
-    myUl.appendChild(myLi3)
-    myLi3.innerText = itemToDisplay.color
-    const myLi5 = document.createElement('li')
-    myUl.appendChild(myLi5)
-    myLi5.innerText = '-  ' + itemToDisplay.qty + '  +'
-    const myLi6 = document.createElement('li')
-    myUl.appendChild(myLi6)
+    // create column for each color from colors - detail
+    const myDetail = document.createElement('div')
+    const myDetailClasses = ['d-flex', 'flex-row', 'justify-content-evenly']
+    myDetail.classList.add(...myDetailClasses)
+    myCartProductDiv.appendChild(myDetail)
+    for (const [key, value] of Object.entries(itemToDisplay.colors)) {
+      console.log(`${key}:${value}`)
+      const myDetailColumn = document.createElement('div')
+      myDetailColumn.classList.add('justify-content-center')
+      const myLi31 = document.createElement('div')
+      myDetailColumn.appendChild(myLi31)
+      myLi31.innerText = key
+      const myLi32 = document.createElement('div')
+      myDetailColumn.appendChild(myLi32)
+      myLi32.innerText = '-  ' + value + '  +'
+      myDetail.appendChild(myDetailColumn)
+    }
+    // then summary
+    const myLi5 = document.createElement('div')
+    myCartProductDiv.appendChild(myLi5)
+    myLi5.innerText = itemToDisplay.qty
+    const myLi6 = document.createElement('div')
+    myCartProductDiv.appendChild(myLi6)
     myLi6.innerText = (itemToDisplay.unitPrice / 100).toString()
-    const myLi7 = document.createElement('li')
-    myUl.appendChild(myLi7)
+    const myLi7 = document.createElement('div')
+    myCartProductDiv.appendChild(myLi7)
     myLi7.innerText = ((itemToDisplay.unitPrice / 100) * itemToDisplay.qty).toString()
     myCartContent.appendChild(myCartProductDiv)
   }
