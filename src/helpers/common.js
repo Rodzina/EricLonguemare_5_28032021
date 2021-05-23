@@ -103,22 +103,33 @@ export const setPreselectedItem = async (teddy, selectedColor) => {
  *
  * @param teddyColors
  * @param selectedColor
- * @returns {*}
+ * @param isMinus
+ * @returns {{}}
  */
-export const updateColorsQty = (teddyColors, selectedColor) => {
-  console.log(teddyColors)
-  console.log(selectedColor)
+export const updateColorsQty = (teddyColors, selectedColor, isMinus) => {
   const updatedObject = {}
 
-  for (const [key, value] of Object.entries(teddyColors)) {
-    if (key === selectedColor) {
-      console.log(" à mettre à jour : " + key)
-      updatedObject[key] = value + 1
-    } else {
-      updatedObject[key] = value
+  if (!isMinus) {
+    // add one teddy for ref and color
+    for (const [key, value] of Object.entries(teddyColors)) {
+      if (key === selectedColor) {
+        console.log(" à mettre à jour : " + key)
+        updatedObject[key] = value + 1
+      } else {
+        updatedObject[key] = value
+      }
+    }
+  } else {
+    // remove one teddy for ref and color
+    for (const [key, value] of Object.entries(teddyColors)) {
+      if (key === selectedColor) {
+        console.log(" à mettre à jour : " + key)
+        updatedObject[key] = value - 1
+      } else {
+        updatedObject[key] = value
+      }
     }
   }
-console.log(updatedObject)
 return updatedObject
 }
 
