@@ -118,7 +118,7 @@ const displayTeddyPage = async function (teddy, theCart) {
   teddyPrice.appendChild(teddyPriceLabelTwo)
   teddyPriceLabelTwo.classList.add('label')
 
-  const teddyPriceLabelTextTwo = document.createTextNode('Maintenant Stp ;)')
+  const teddyPriceLabelTextTwo = document.createTextNode('Choisis ma couleur ;)')
   teddyPriceLabelTwo.appendChild(teddyPriceLabelTextTwo)
 
   // Option selection display
@@ -246,24 +246,6 @@ const displayCartPage = async theCart => {
   const myCartContent = document.createElement('div')
   myBlockQuote.innerText = 'Article(s) : ' + theCart.totalNumber + ' - ' + 'Montant total : ' + theCart.totalAmount / 100
 
-  // https://www.javascripttutorial.net/javascript-array-sort/
-  // https://stackoverflow.com/questions/6129952/javascript-sort-array-by-two-fields
-
-  const myArray = []
-
-  for (let i = 0, max = theCart.items.length; i < max; i++) {
-    myArray.push(parse(theCart.items[i]))
-  }
-
-  myArray.sort(function (x, y) {
-    const a = x.name.toUpperCase()
-    const b = y.name.toUpperCase()
-    return a === b ? 0 : a > b ? 1 : -1
-  })
-
-  console.log(myArray)
-
-  console.log(theCart)
   const length = theCart.items.length
   console.log(length)
 
@@ -289,32 +271,70 @@ const displayCartPage = async theCart => {
     myLi2.innerText = itemToDisplay.name
     // create column for each color from colors - detail
     const myDetail = document.createElement('div')
-    const myDetailClasses = ['d-flex', 'flex-row', 'justify-content-evenly']
+    const myDetailClasses = ['d-flex', 'flex-row', 'justify-content-evenly', 'flex-wrap']
     myDetail.classList.add(...myDetailClasses)
     myCartProductDiv.appendChild(myDetail)
     for (const [key, value] of Object.entries(itemToDisplay.colors)) {
-      console.log(`${key}:${value}`)
       const myDetailColumn = document.createElement('div')
       myDetailColumn.classList.add('justify-content-center')
       const myLi31 = document.createElement('div')
       myDetailColumn.appendChild(myLi31)
       myLi31.innerText = key
       const myLi32 = document.createElement('div')
-      const myMinusSpan = document.createElement('i')
-      myMinusSpan.classList.add('bi', 'bi-dash-circle-fill')
+      const myMinusButton = document.createElement('button')
+      const myMinusButtonIcon = document.createElement('i')
+      myMinusButtonIcon.classList.add('bi', 'bi-dash-circle-fill')
+      myMinusButton.appendChild(myMinusButtonIcon)
+      myMinusButton.onclick = function () {
+        for (let z = 0, max = theCart.items.length; z < max; z++) {
+          const itemToCheck = parse(theCart.items[i])
+          if (itemToDisplay.id === itemToCheck.id) {
+            console.log('Update quantity for teddy already in cart')
+            console.log('Objet colors :' + key.toString())
+            itemToDisplay.colors = updateColorsQty(itemToDisplay.colors, key.toString(), true)
+            itemToDisplay.qty -= 1
+            theCart.items.splice(i, 1)
+            if (itemToDisplay.qty > 0) {
+              theCart.items.push(stringify(itemToDisplay))
+            }
+            break
+          }
+        }
+        theCart.totalNumber -= 1
+        theCart.totalAmount -= itemToDisplay.unitPrice
+        localStorage.setItem('cart', stringify(theCart))
+      }
       const myQtySpan = document.createElement('span')
       myQtySpan.innerText = value.toString()
-      const myPlusSpan = document.createElement('i')
-      myPlusSpan.classList.add('bi', 'bi-plus-circle-fill')
-      myLi32.appendChild(myMinusSpan)
+      const myPlusButton = document.createElement('button')
+      myPlusButton.setAttribute('type', 'button')
+      myPlusButton.setAttribute('autocomplete', 'off')
+      myPlusButton.setAttribute('value', key.toString())
+      const myPlusButtonIcon = document.createElement('i')
+      myPlusButtonIcon.classList.add('bi', 'bi-plus-circle-fill')
+      myPlusButton.appendChild(myPlusButtonIcon)
+      myPlusButton.onclick = function () {
+        for (let z = 0, max = theCart.items.length; z < max; z++) {
+          const itemToCheck = parse(theCart.items[i])
+          if (itemToDisplay.id === itemToCheck.id) {
+            console.log('Update quantity for teddy already in cart')
+            console.log('Objet colors :' + key.toString())
+            itemToDisplay.colors = updateColorsQty(itemToDisplay.colors, key.toString())
+            itemToDisplay.qty += 1
+            theCart.items.splice(i, 1)
+            theCart.items.push(stringify(itemToDisplay))
+            break
+          }
+        }
+        theCart.totalNumber += 1
+        theCart.totalAmount += itemToDisplay.unitPrice
+        localStorage.setItem('cart', stringify(theCart))
+      }
+      myLi32.appendChild(myMinusButton)
       myLi32.appendChild(myQtySpan)
-      myLi32.appendChild(myPlusSpan)
-
-
-      // bi-plus-circle-fill
+      myLi32.appendChild(myPlusButton)
 
       myDetailColumn.appendChild(myLi32)
-      // myLi32.innerText = value.toString()
       myDetail.appendChild(myDetailColumn)
     }
     // then summary
