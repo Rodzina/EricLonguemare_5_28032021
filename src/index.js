@@ -300,8 +300,21 @@ const displayCartPage = async theCart => {
       myDetailColumn.appendChild(myLi31)
       myLi31.innerText = key
       const myLi32 = document.createElement('div')
+      const myMinusSpan = document.createElement('i')
+      myMinusSpan.classList.add('bi', 'bi-dash-circle-fill')
+      const myQtySpan = document.createElement('span')
+      myQtySpan.innerText = value.toString()
+      const myPlusSpan = document.createElement('i')
+      myPlusSpan.classList.add('bi', 'bi-plus-circle-fill')
+      myLi32.appendChild(myMinusSpan)
+      myLi32.appendChild(myQtySpan)
+      myLi32.appendChild(myPlusSpan)
+
+
+      // bi-plus-circle-fill
+
       myDetailColumn.appendChild(myLi32)
-      myLi32.innerText = '-  ' + value + '  +'
+      // myLi32.innerText = value.toString()
       myDetail.appendChild(myDetailColumn)
     }
     // then summary
