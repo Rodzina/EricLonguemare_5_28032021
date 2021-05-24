@@ -276,6 +276,7 @@ const displayCartPage = async theCart => {
     teddyPictureElement.crossOrigin = 'anonymous'
     teddyPictureElement.setAttribute('width', '190px')
     teddyPictureElement.setAttribute('height', '125px')
+    teddyPictureElement.setAttribute('alt', itemToDisplay.name)
     await displayAndStorePicture(teddyPictureElement, itemToDisplay.imageUrl, 'w=190&h=190&height=125&f=webp&crop=cover', '+thumb')
       .catch(err => console.log(err))
     myCartProductDiv.appendChild(teddyPictureElement)
@@ -299,8 +300,12 @@ const displayCartPage = async theCart => {
       myLi31.innerText = key
       const myLi32 = document.createElement('div')
       const myMinusButton = document.createElement('button')
+      myMinusButton.setAttribute('type', 'button')
+      myMinusButton.setAttribute('autocomplete', 'off')
+      myMinusButton.setAttribute('value', key.toString())
       const myMinusButtonIcon = document.createElement('i')
       myMinusButtonIcon.classList.add('bi', 'bi-dash-circle-fill')
+      myMinusButtonIcon.setAttribute('aria-label', 'Enlever un ' + itemToDisplay.name + ' de couleur ' + key.toString())
       myMinusButton.appendChild(myMinusButtonIcon)
       myMinusButton.onclick = function () {
         console.log('Button minus Clicked')
@@ -352,6 +357,7 @@ const displayCartPage = async theCart => {
       myPlusButton.setAttribute('value', key.toString())
       const myPlusButtonIcon = document.createElement('i')
       myPlusButtonIcon.classList.add('bi', 'bi-plus-circle-fill')
+      myPlusButtonIcon.setAttribute('aria-label', 'Ajouter un ' + itemToDisplay.name + ' de couleur ' + key.toString())
       myPlusButton.appendChild(myPlusButtonIcon)
       myPlusButton.onclick = function () {
         console.log('Button plus Clicked')
