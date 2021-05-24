@@ -207,6 +207,7 @@ const displayTeddyPage = async function (teddy, theCart) {
       theCart.totalNumber += 1
       theCart.totalAmount += preselected.unitPrice
       updateGeneralQuantityAnPriceDisplayed(theCart, ['itemnumber'])
+      theCart.items = sortingTheCartTeddiesArray(theCart.items)
       localStorage.setItem('cart', stringify(theCart))
       // item has been added to cart - back to color selection
       document.getElementById('addToCart').classList.replace('active', 'disabled')
@@ -259,14 +260,10 @@ const displayCartPage = async theCart => {
 
   myBlockQuote.innerText = 'Article(s) : ' + theCart.totalNumber + ' - ' + 'Montant total : ' + theCart.totalAmount / 100
 
-  console.log(theCart.items)
   // sort theCart.items on teddy name to preserve order of items in cart
   theCart.items = sortingTheCartTeddiesArray(theCart.items)
 
-  console.log(theCart.items)
-
   const length = theCart.items.length
-  console.log(length)
 
   for (let i = 0, max = length; i < max; i++) {
     const itemToDisplay = parse(theCart.items[i])
@@ -307,8 +304,11 @@ const displayCartPage = async theCart => {
       myMinusButton.appendChild(myMinusButtonIcon)
       myMinusButton.onclick = function () {
         console.log('Button minus Clicked')
+        console.log(itemToDisplay.id)
         for (let z = 0, max = theCart.items.length; z < max; z++) {
-          const itemToCheck = parse(theCart.items[i])
+          console.log(theCart.items.length)
+          const itemToCheck = parse(theCart.items[z])
+          console.log(itemToCheck.id)
           if (itemToDisplay.id === itemToCheck.id) {
             console.log('Minus : itemToDisplay = itemtockeck')
             const myDisplayedQuantityToModify = itemToDisplay.id + key.toString().replace(' ', '').toUpperCase()
@@ -320,11 +320,12 @@ const displayCartPage = async theCart => {
             itemToDisplay.colors = updateColorsQty(itemToDisplay.colors, key.toString(), true)
             itemToDisplay.qty -= 1
             updateTeddyQuantityToDisplayForColor(key.toString(), itemToDisplay.colors, myDisplayedQuantityToModify)
-            theCart.items.splice(i, 1)
+            theCart.items.splice(z, 1)
+            console.log('splice : ' + z)
             if (itemToDisplay.qty > 0) {
+              console.log('push quantity :' + itemToDisplay.qty)
               theCart.items.push(stringify(itemToDisplay))
-              // sorted to avoid errors when update cart
-              theCart.items = sortingTheCartTeddiesArray(theCart.items)
+              console.log('push')
             }
             if (itemToDisplay.qty >= 0) {
               theCart.totalNumber -= 1
@@ -338,6 +339,7 @@ const displayCartPage = async theCart => {
             break
           }
         }
+        theCart.items = sortingTheCartTeddiesArray(theCart.items)
         localStorage.setItem('cart', stringify(theCart))
         // theCart = parse(localStorage.getItem('cart'))
       }
@@ -353,8 +355,10 @@ const displayCartPage = async theCart => {
       myPlusButton.appendChild(myPlusButtonIcon)
       myPlusButton.onclick = function () {
         console.log('Button plus Clicked')
+        console.log(itemToDisplay.id)
         for (let z = 0, max = theCart.items.length; z < max; z++) {
           const itemToCheck = parse(theCart.items[z])
+          console.log(itemToCheck.id)
           if (itemToDisplay.id === itemToCheck.id) {
             console.log('Plus : itemToDisplay = itemtockeck')
             const myDisplayedQuantityToModify = itemToDisplay.id + key.toString().replace(' ', '').toUpperCase()
@@ -365,16 +369,16 @@ const displayCartPage = async theCart => {
             console.log(itemToDisplay.id + key.toString().replace(' ', '').toUpperCase())
             console.log(itemToDisplay.qty)
             updateTeddyQuantityToDisplayForColor(key.toString(), itemToDisplay.colors, myDisplayedQuantityToModify)
-            theCart.items.splice(i, 1)
+            theCart.items.splice(z, 1)
             theCart.items.push(stringify(itemToDisplay))
             // sorted to avoid errors when update cart
-            theCart.items = sortingTheCartTeddiesArray(theCart.items)
             theCart.totalNumber += 1
             theCart.totalAmount += itemToDisplay.unitPrice
             updateGeneralQuantityAnPriceDisplayed(theCart)
             break
           }
         }
+        theCart.items = sortingTheCartTeddiesArray(theCart.items)
         console.log(theCart)
         localStorage.setItem('cart', stringify(theCart))
         // theCart = parse(localStorage.getItem('cart'))
