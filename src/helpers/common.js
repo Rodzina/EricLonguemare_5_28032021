@@ -110,7 +110,7 @@ export const updateColorsQty = (teddyColors, selectedColor, isMinus) => {
   const updatedObject = {}
 
   if (!isMinus) {
-    // add one teddy for ref and color
+    // add one teddy for ref and color, change quantity displayed
     for (const [key, value] of Object.entries(teddyColors)) {
       if (key === selectedColor) {
         console.log(" à mettre à jour : " + key)
@@ -120,7 +120,7 @@ export const updateColorsQty = (teddyColors, selectedColor, isMinus) => {
       }
     }
   } else {
-    // remove one teddy for ref and color
+    // remove one teddy for ref and color,  change quantity displayed
     for (const [key, value] of Object.entries(teddyColors)) {
       if (key === selectedColor) {
         console.log(" à mettre à jour : " + key)
@@ -131,6 +131,67 @@ export const updateColorsQty = (teddyColors, selectedColor, isMinus) => {
     }
   }
 return updatedObject
+}
+
+/**
+ *
+ * @param theCart
+ */
+export function updateGeneralQuantityAnPriceDisplayed (theCart) {
+  document.getElementById('itemnumber').innerHTML = theCart.totalNumber
+  document.getElementById('totalamount').innerHTML = (theCart.totalAmount / 100).toString()
+}
+
+/**
+ *
+ * @param selectedColor
+ * @param teddyColors
+ * @param elementID
+ */
+export function updateTeddyQuantityToDisplayForColor (selectedColor, teddyColors, elementID, ) {
+  console.log(elementID)
+  const toUpdate = document.getElementById(elementID)
+  for (const [key, value] of Object.entries(teddyColors)) {
+    if (key === selectedColor) {
+      console.log(" Update quantity displayed for : " + key)
+      toUpdate.innerText = value.toString()
+    } else {
+      //do something
+    }
+  }
+}
+
+/**
+ *
+ * @param items
+ * @returns {*[]}
+ */
+export function sortingTheCartTeddiesArray(items) {
+  // https://www.javascripttutorial.net/javascript-array-sort/
+  // https://stackoverflow.com/questions/6129952/javascript-sort-array-by-two-fields
+  const sortedArray = []
+  const newArray = []
+  for (let i = 0, max = items.length; i < max; i++) {
+    sortedArray.push(parse(items[i]))
+  }
+  sortedArray.sort(function (x, y) {
+    const a = x.name.toUpperCase()
+    const b = y.name.toUpperCase()
+    return a === b ? 0 : a > b ? 1 : -1
+  })
+
+  for (let i = 0, max = sortedArray.length; i < max; i++) {
+    newArray.push(stringify(sortedArray[i]))
+  }
+    return newArray
+}
+
+/**
+ *
+ * @param theCart
+ */
+export function updateTeddyQuantity (theCart) {
+  document.getElementById('itemnumber').innerHTML = theCart.totalNumber
 }
 
 /**
