@@ -5,7 +5,18 @@ import * as bootstrap from 'bootstrap'
 // styles personnalisés
 import { Teddy } from './classes/teddy' // Import our Teddy classes
 import { Cart } from './classes/cart' // Import our Cart classes
-import { displayAndStorePicture, fetchFromAPI, getUrl, setPreselectedItem, stringify, parse, updateColorsQty } from './helpers/common' // Import helpers
+import {
+  displayAndStorePicture,
+  fetchFromAPI,
+  getUrl,
+  setPreselectedItem,
+  stringify,
+  parse,
+  updateColorsQty,
+  updateGeneralQuantityAnPriceDisplayed,
+  updateTeddyQuantityToDisplayForColor,
+  sortingTheCartTeddiesArray
+} from './helpers/common' // Import helpers
 
 /**
  * build html for one teddie card on home page
@@ -195,6 +206,7 @@ const displayTeddyPage = async function (teddy, theCart) {
       }
       theCart.totalNumber += 1
       theCart.totalAmount += preselected.unitPrice
+      updateGeneralQuantityAnPriceDisplayed(theCart, ['itemnumber'])
       localStorage.setItem('cart', stringify(theCart))
       // item has been added to cart - back to color selection
       document.getElementById('addToCart').classList.replace('active', 'disabled')
@@ -244,7 +256,14 @@ const displayCartPage = async theCart => {
   const htmlContent = document.getElementById('content')
   const myBlockQuote = document.createElement('blockquote')
   const myCartContent = document.createElement('div')
+
   myBlockQuote.innerText = 'Article(s) : ' + theCart.totalNumber + ' - ' + 'Montant total : ' + theCart.totalAmount / 100
+
+  console.log(theCart.items)
+  // sort theCart.items on teddy name to preserve order of items in cart
+  theCart.items = sortingTheCartTeddiesArray(theCart.items)
+
+  console.log(theCart.items)
 
   const length = theCart.items.length
   console.log(length)
@@ -254,6 +273,7 @@ const displayCartPage = async theCart => {
     const myCartProductDiv = document.createElement('div')
     const myClass = ['card', 'd-flex']
     myCartProductDiv.classList.add(...myClass)
+    myCartProductDiv.setAttribute('id', itemToDisplay.id + 'card')
     const teddyPictureElement = document.createElement('img')
     teddyPictureElement.classList.add('card-img-top')
     teddyPictureElement.crossOrigin = 'anonymous'
@@ -286,25 +306,43 @@ const displayCartPage = async theCart => {
       myMinusButtonIcon.classList.add('bi', 'bi-dash-circle-fill')
       myMinusButton.appendChild(myMinusButtonIcon)
       myMinusButton.onclick = function () {
+        console.log('Button minus Clicked')
         for (let z = 0, max = theCart.items.length; z < max; z++) {
           const itemToCheck = parse(theCart.items[i])
           if (itemToDisplay.id === itemToCheck.id) {
+            console.log('Minus : itemToDisplay = itemtockeck')
+            const myDisplayedQuantityToModify = itemToDisplay.id + key.toString().replace(' ', '').toUpperCase()
+            if (document.getElementById(myDisplayedQuantityToModify).innerText.toString() === '0') {
+              break
+            }
             console.log('Update quantity for teddy already in cart')
             console.log('Objet colors :' + key.toString())
             itemToDisplay.colors = updateColorsQty(itemToDisplay.colors, key.toString(), true)
             itemToDisplay.qty -= 1
+            updateTeddyQuantityToDisplayForColor(key.toString(), itemToDisplay.colors, myDisplayedQuantityToModify)
             theCart.items.splice(i, 1)
             if (itemToDisplay.qty > 0) {
               theCart.items.push(stringify(itemToDisplay))
+              // sorted to avoid errors when update cart
+              theCart.items = sortingTheCartTeddiesArray(theCart.items)
+            }
+            if (itemToDisplay.qty >= 0) {
+              theCart.totalNumber -= 1
+              theCart.totalAmount -= itemToDisplay.unitPrice
+              updateGeneralQuantityAnPriceDisplayed(theCart)
+            }
+            if (itemToDisplay.qty === 0) {
+              console.log('to remove : ' + itemToDisplay.id + 'card')
+              document.getElementById(itemToDisplay.id + 'card').outerHTML = ''
             }
             break
           }
         }
-        theCart.totalNumber -= 1
-        theCart.totalAmount -= itemToDisplay.unitPrice
         localStorage.setItem('cart', stringify(theCart))
+        // theCart = parse(localStorage.getItem('cart'))
       }
       const myQtySpan = document.createElement('span')
+      myQtySpan.setAttribute('id', itemToDisplay.id + key.toString().replace(' ', '').toUpperCase())
       myQtySpan.innerText = value.toString()
       const myPlusButton = document.createElement('button')
       myPlusButton.setAttribute('type', 'button')
@@ -314,21 +352,32 @@ const displayCartPage = async theCart => {
       myPlusButtonIcon.classList.add('bi', 'bi-plus-circle-fill')
       myPlusButton.appendChild(myPlusButtonIcon)
       myPlusButton.onclick = function () {
+        console.log('Button plus Clicked')
         for (let z = 0, max = theCart.items.length; z < max; z++) {
-          const itemToCheck = parse(theCart.items[i])
+          const itemToCheck = parse(theCart.items[z])
           if (itemToDisplay.id === itemToCheck.id) {
+            console.log('Plus : itemToDisplay = itemtockeck')
+            const myDisplayedQuantityToModify = itemToDisplay.id + key.toString().replace(' ', '').toUpperCase()
             console.log('Update quantity for teddy already in cart')
             console.log('Objet colors :' + key.toString())
-            itemToDisplay.colors = updateColorsQty(itemToDisplay.colors, key.toString())
+            itemToDisplay.colors = updateColorsQty(itemToDisplay.colors, key.toString(), false)
             itemToDisplay.qty += 1
+            console.log(itemToDisplay.id + key.toString().replace(' ', '').toUpperCase())
+            console.log(itemToDisplay.qty)
+            updateTeddyQuantityToDisplayForColor(key.toString(), itemToDisplay.colors, myDisplayedQuantityToModify)
             theCart.items.splice(i, 1)
             theCart.items.push(stringify(itemToDisplay))
+            // sorted to avoid errors when update cart
+            theCart.items = sortingTheCartTeddiesArray(theCart.items)
+            theCart.totalNumber += 1
+            theCart.totalAmount += itemToDisplay.unitPrice
+            updateGeneralQuantityAnPriceDisplayed(theCart)
             break
           }
         }
-        theCart.totalNumber += 1
-        theCart.totalAmount += itemToDisplay.unitPrice
+        console.log(theCart)
         localStorage.setItem('cart', stringify(theCart))
+        // theCart = parse(localStorage.getItem('cart'))
       }
       myLi32.appendChild(myMinusButton)
       myLi32.appendChild(myQtySpan)
@@ -360,13 +409,16 @@ const displayCartPage = async theCart => {
 const process = async () => {
   // cart init
   let theCart
+  // update cart item count
   if (localStorage.getItem('cart') === null) {
     console.log('No Cart, init it')
     theCart = new Cart(0, 0)
+    updateGeneralQuantityAnPriceDisplayed(theCart)
   } else {
     try {
       console.log('One cart exist, get it')
       theCart = parse(localStorage.getItem('cart'))
+      updateGeneralQuantityAnPriceDisplayed(theCart)
     } catch (e) {
       console.log('Error : Cant get cart' + e)
     }
@@ -384,7 +436,6 @@ const process = async () => {
   }
 
   if (params.has('panier')) {
-    // do something
     await displayCartPage(theCart)
   }
 
