@@ -274,10 +274,8 @@ const displayCartPage = async theCart => {
     const teddyPictureElement = document.createElement('img')
     teddyPictureElement.classList.add('card-img-top')
     teddyPictureElement.crossOrigin = 'anonymous'
-    teddyPictureElement.setAttribute('width', '190px')
-    teddyPictureElement.setAttribute('height', '125px')
     teddyPictureElement.setAttribute('alt', itemToDisplay.name)
-    await displayAndStorePicture(teddyPictureElement, itemToDisplay.imageUrl, 'w=190&h=190&height=125&f=webp&crop=cover', '+thumb')
+    await displayAndStorePicture(teddyPictureElement, itemToDisplay.imageUrl, 'w=380&h=380&height=250&f=webp&crop=cover', '+small')
       .catch(err => console.log(err))
     myCartProductDiv.appendChild(teddyPictureElement)
     const myLi = document.createElement('div')
@@ -387,7 +385,6 @@ const displayCartPage = async theCart => {
         theCart.items = sortingTheCartTeddiesArray(theCart.items)
         console.log(theCart)
         localStorage.setItem('cart', stringify(theCart))
-        // theCart = parse(localStorage.getItem('cart'))
       }
       myLi32.appendChild(myMinusButton)
       myLi32.appendChild(myQtySpan)
