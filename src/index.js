@@ -274,9 +274,8 @@ const displayCartPage = async theCart => {
     const teddyPictureElement = document.createElement('img')
     teddyPictureElement.classList.add('card-img-top')
     teddyPictureElement.crossOrigin = 'anonymous'
-    teddyPictureElement.setAttribute('width', '190px')
-    teddyPictureElement.setAttribute('height', '125px')
-    await displayAndStorePicture(teddyPictureElement, itemToDisplay.imageUrl, 'w=190&h=190&height=125&f=webp&crop=cover', '+thumb')
+    teddyPictureElement.setAttribute('alt', itemToDisplay.name)
+    await displayAndStorePicture(teddyPictureElement, itemToDisplay.imageUrl, 'w=380&h=380&height=250&f=webp&crop=cover', '+small')
       .catch(err => console.log(err))
     myCartProductDiv.appendChild(teddyPictureElement)
     const myLi = document.createElement('div')
@@ -299,8 +298,12 @@ const displayCartPage = async theCart => {
       myLi31.innerText = key
       const myLi32 = document.createElement('div')
       const myMinusButton = document.createElement('button')
+      myMinusButton.setAttribute('type', 'button')
+      myMinusButton.setAttribute('autocomplete', 'off')
+      myMinusButton.setAttribute('value', key.toString())
       const myMinusButtonIcon = document.createElement('i')
       myMinusButtonIcon.classList.add('bi', 'bi-dash-circle-fill')
+      myMinusButtonIcon.setAttribute('aria-label', 'Enlever un ' + itemToDisplay.name + ' de couleur ' + key.toString())
       myMinusButton.appendChild(myMinusButtonIcon)
       myMinusButton.onclick = function () {
         console.log('Button minus Clicked')
@@ -352,6 +355,7 @@ const displayCartPage = async theCart => {
       myPlusButton.setAttribute('value', key.toString())
       const myPlusButtonIcon = document.createElement('i')
       myPlusButtonIcon.classList.add('bi', 'bi-plus-circle-fill')
+      myPlusButtonIcon.setAttribute('aria-label', 'Ajouter un ' + itemToDisplay.name + ' de couleur ' + key.toString())
       myPlusButton.appendChild(myPlusButtonIcon)
       myPlusButton.onclick = function () {
         console.log('Button plus Clicked')
@@ -381,7 +385,6 @@ const displayCartPage = async theCart => {
         theCart.items = sortingTheCartTeddiesArray(theCart.items)
         console.log(theCart)
         localStorage.setItem('cart', stringify(theCart))
-        // theCart = parse(localStorage.getItem('cart'))
       }
       myLi32.appendChild(myMinusButton)
       myLi32.appendChild(myQtySpan)
