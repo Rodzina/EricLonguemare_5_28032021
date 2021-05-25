@@ -188,14 +188,6 @@ export function sortingTheCartTeddiesArray(items) {
 
 /**
  *
- * @param theCart
- */
-export function updateTeddyQuantity (theCart) {
-  document.getElementById('itemnumber').innerHTML = theCart.totalNumber
-}
-
-/**
- *
  * @param string
  * @returns {string}
  */
