@@ -1,0 +1,27 @@
+curl https://polar-retreat-13131.herokuapp.com/api/teddies/
+
+curl https://polar-retreat-13131.herokuapp.com/api/teddies/5beaa8bf1c9d440000a57d94
+
+curl -X POST -H "Content-Type: application/json" -d '{"contact": {"firstName": "testFirstname", "lastName": "testLastName", "address": "adresse de test", "city": "cityTest", "email": "email@test.com"}, "products": ["5beaa8bf1c9d440000a57d94"]}' https://polar-retreat-13131.herokuapp.com/api/teddies/order
+
+Response for POST order :
+
+{
+	"contact": {
+		"firstName": "testFirstname",
+		"lastName": "testLastName",
+		"address": "adresse de test",
+		"city": "cityTest",
+		"email": "email@test.com"
+	},
+	"products": [{
+		"colors": ["Pale brown", "Dark brown", "White"],
+		"_id": "5beaa8bf1c9d440000a57d94",
+		"name": "Arnold",
+		"price": 3900,
+		"imageUrl": "http://polar-retreat-13131.herokuapp.com/images/teddy_2.jpg",
+		"description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+	}],
+	"orderId": "c6b24a60-be26-11eb-91b5-2fd5f33b22da"
+}
+
