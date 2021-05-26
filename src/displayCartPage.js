@@ -5,16 +5,58 @@ import {
   stringify,
   updateColorsQty,
   updateGeneralQuantityAnPriceDisplayed,
-  updateTeddyQuantityToDisplayForColor,
-  validateClientForm
+  updateTeddyQuantityToDisplayForColor
 } from './helpers/common'
 
 /**
  *
+ */
+const validateClientForm = (theClient) => {
+  // do something
+  'use strict'
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  const forms = document.querySelectorAll('.needs-validation')
+
+  // Loop over them and prevent submission
+
+  Array.prototype.slice.call(forms)
+    .forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          console.log('formulaire KO')
+          event.preventDefault()
+          event.stopPropagation()
+        } else {
+          // If all forms field are OK
+          // set client object
+          console.log('Formulaire OK')
+          event.preventDefault()
+          event.stopPropagation()
+          theClient.firstName = document.getElementById('firstName').value
+          theClient.lastName = document.getElementById('lastName').value
+          theClient.address = document.getElementById('address').value
+          theClient.city = document.getElementById('city').value
+          theClient.email = document.getElementById('email').value
+          // then try to store it
+          try {
+            localStorage.setItem('client', JSON.stringify(theClient))
+          } catch (e) {
+            console.log('Cant save client datas' + e)
+          }
+        }
+        form.classList.add('was-validated')
+      }, false)
+    })
+}
+
+/**
+ *
  * @param theCart
+ * @param theClient
  * @returns {Promise<void>}
  */
-export const displayCartPage = async theCart => {
+export const displayCartPage = async (theCart, theClient) => {
   const htmlContent = document.getElementById('content')
   const blockQuote = document.createElement('blockquote')
   const cartContent = document.createElement('div')
@@ -168,14 +210,29 @@ export const displayCartPage = async theCart => {
   }
 
   // build client infos
+  // check if we have client infos
+  let isTheClientKnown = false
+
+  console.log(theClient)
+  if (theClient.firstName && theClient.lastName && theClient.address && theClient.city && theClient.email) {
+    // do something
+    console.log('Client infos are not empty and stored in local Storage')
+    console.log(theClient)
+    isTheClientKnown = true
+  }
   const mClientInfosDiv = document.createElement('form')
   mClientInfosDiv.classList.add('needs-validation')
   mClientInfosDiv.setAttribute('novalidate', '')
   // firstName
   const mFirstNameDiv = document.createElement('div')
   const firstName = document.createElement('input')
+  firstName.setAttribute('id', 'firstName')
   firstName.setAttribute('type', 'text')
-  firstName.setAttribute('placeholder', 'Prénom')
+  if (isTheClientKnown) {
+    firstName.value = theClient.firstName
+  } else {
+    firstName.setAttribute('placeholder', 'Prénom')
+  }
   firstName.setAttribute('aria-label', 'Prénom')
   firstName.setAttribute('required', '')
   firstName.classList.add('form-control')
@@ -192,8 +249,13 @@ export const displayCartPage = async theCart => {
   // lastName
   const mLastNameDiv = document.createElement('div')
   const lastName = document.createElement('input')
+  lastName.setAttribute('id', 'lastName')
   lastName.setAttribute('type', 'text')
-  lastName.setAttribute('placeholder', 'Nom')
+  if (isTheClientKnown) {
+    lastName.value = theClient.lastName
+  } else {
+    lastName.setAttribute('placeholder', 'Nom')
+  }
   lastName.setAttribute('aria-label', 'Nom')
   lastName.setAttribute('required', '')
   lastName.classList.add('form-control')
@@ -210,8 +272,13 @@ export const displayCartPage = async theCart => {
   // address
   const mAddressDiv = document.createElement('div')
   const address = document.createElement('input')
+  address.setAttribute('id', 'address')
   address.setAttribute('type', 'text')
-  address.setAttribute('placeholder', 'Adresse')
+  if (isTheClientKnown) {
+    address.value = theClient.address
+  } else {
+    address.setAttribute('placeholder', 'Adresse')
+  }
   address.setAttribute('aria-label', 'Adresse')
   address.setAttribute('required', '')
   address.classList.add('form-control')
@@ -228,8 +295,13 @@ export const displayCartPage = async theCart => {
   // city
   const mCityDiv = document.createElement('div')
   const city = document.createElement('input')
+  city.setAttribute('id', 'city')
   city.setAttribute('type', 'text')
-  city.setAttribute('placeholder', 'Ville')
+  if (isTheClientKnown) {
+    city.value = theClient.city
+  } else {
+    city.setAttribute('placeholder', 'Ville')
+  }
   city.setAttribute('aria-label', 'Ville')
   city.setAttribute('required', '')
   city.classList.add('form-control')
@@ -246,17 +318,22 @@ export const displayCartPage = async theCart => {
   // email
   const mEmailDiv = document.createElement('div')
   const email = document.createElement('input')
+  email.setAttribute('id', 'email')
   email.setAttribute('type', 'email')
-  email.setAttribute('placeholder', 'email')
+  if (isTheClientKnown) {
+    email.value = theClient.email
+  } else {
+    firstName.setAttribute('placeholder', 'email')
+  }
   email.setAttribute('aria-label', 'email')
   email.setAttribute('required', '')
   email.classList.add('form-control')
   const validFeedBackForEmail = document.createElement('div')
   validFeedBackForEmail.classList.add('valid-feedback')
-  validFeedBackForEmail.innerText = 'C\'est bon ! Pas de fautes d\'orthographe ??'
+  validFeedBackForEmail.innerText = 'C\'est bon ! Super !'
   const invalidFeedBackForEmail = document.createElement('div')
   invalidFeedBackForEmail.classList.add('invalid-feedback')
-  invalidFeedBackForEmail.innerText = 'Pas de mail, un @ qui manque ?'
+  invalidFeedBackForEmail.innerText = 'Pas de mail, un @ qui manque, un domaine : monmail@monhebergeur.tld ?'
   mEmailDiv.appendChild(email)
   mEmailDiv.appendChild(validFeedBackForEmail)
   mEmailDiv.appendChild(invalidFeedBackForEmail)
@@ -272,6 +349,7 @@ export const displayCartPage = async theCart => {
     // do something
     console.log('Button process order clicked')
     // check infos are completed then enable order button and create client object
+    // see validateClientForm()
     // https://developer.mozilla.org/fr/docs/Learn/Forms/Form_validation
     // https://getbootstrap.com/docs/5.0/forms/validation/
     // build and send API post then check if order is registered
@@ -285,6 +363,5 @@ export const displayCartPage = async theCart => {
   htmlContent.appendChild(cartContent)
   htmlContent.appendChild(mClientInfosDiv)
 
-  await validateClientForm()
+  await validateClientForm(theClient)
 }
-

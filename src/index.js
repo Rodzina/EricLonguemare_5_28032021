@@ -5,6 +5,7 @@ import * as bootstrap from 'bootstrap'
 // styles personnalisés
 import { Teddy } from './classes/teddy' // Import our Teddy classes
 import { Cart } from './classes/cart' // Import our Cart classes
+import { Client } from './classes/client' // Import our Cart classes
 import { fetchFromAPI, getUrl, parse, stringify, updateGeneralQuantityAnPriceDisplayed } from './helpers/common' // Import helpers
 import { displayCartPage } from './displayCartPage'
 import { displayTeddyPage } from './displayTeddyPage'
@@ -17,6 +18,8 @@ import { displayHome } from './displayHome'
 const process = async () => {
   // cart init
   let theCart
+  // client init
+  let theClient
   // update cart item count
   if (localStorage.getItem('cart') === null) {
     console.log('No Cart, init it')
@@ -29,6 +32,17 @@ const process = async () => {
       updateGeneralQuantityAnPriceDisplayed(theCart)
     } catch (e) {
       console.log('Error : Cant get cart' + e)
+    }
+  }
+  if (localStorage.getItem('client') === null) {
+    console.log('No client infos, init them')
+    theClient = new Client()
+  } else {
+    try {
+      console.log('The client infos exist, get it')
+      theClient = parse(localStorage.getItem('client'))
+    } catch (e) {
+      console.log('Error : Cant get client infos' + e)
     }
   }
   const homeURL = document.getElementById('homepage')
@@ -44,7 +58,7 @@ const process = async () => {
   }
 
   if (params.has('panier')) {
-    await displayCartPage(theCart)
+    await displayCartPage(theCart, theClient)
   }
 
   if (params.has('id')) {
