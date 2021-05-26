@@ -5,7 +5,8 @@ import {
   stringify,
   updateColorsQty,
   updateGeneralQuantityAnPriceDisplayed,
-  updateTeddyQuantityToDisplayForColor
+  updateTeddyQuantityToDisplayForColor,
+  validateClientForm
 } from './helpers/common'
 
 /**
@@ -167,48 +168,112 @@ export const displayCartPage = async theCart => {
   }
 
   // build client infos
-  const mClientInfosDiv = document.createElement('div')
+  const mClientInfosDiv = document.createElement('form')
+  mClientInfosDiv.classList.add('needs-validation')
+  mClientInfosDiv.setAttribute('novalidate', '')
+  // firstName
+  const mFirstNameDiv = document.createElement('div')
   const firstName = document.createElement('input')
   firstName.setAttribute('type', 'text')
   firstName.setAttribute('placeholder', 'Prénom')
   firstName.setAttribute('aria-label', 'Prénom')
+  firstName.setAttribute('required', '')
   firstName.classList.add('form-control')
-  mClientInfosDiv.appendChild(firstName)
+  const validFeedBackForFirstName = document.createElement('div')
+  validFeedBackForFirstName.classList.add('valid-feedback')
+  validFeedBackForFirstName.innerText = 'C\'est tout bon !'
+  const invalidFeedBackForFirstName = document.createElement('div')
+  invalidFeedBackForFirstName.classList.add('invalid-feedback')
+  invalidFeedBackForFirstName.innerText = 'Tu as un prénom ?'
+  mFirstNameDiv.appendChild(firstName)
+  mFirstNameDiv.appendChild(validFeedBackForFirstName)
+  mFirstNameDiv.appendChild(invalidFeedBackForFirstName)
+  mClientInfosDiv.appendChild(mFirstNameDiv)
+  // lastName
+  const mLastNameDiv = document.createElement('div')
   const lastName = document.createElement('input')
   lastName.setAttribute('type', 'text')
   lastName.setAttribute('placeholder', 'Nom')
   lastName.setAttribute('aria-label', 'Nom')
+  lastName.setAttribute('required', '')
   lastName.classList.add('form-control')
-  mClientInfosDiv.appendChild(lastName)
+  const validFeedBackForLastName = document.createElement('div')
+  validFeedBackForLastName.classList.add('valid-feedback')
+  validFeedBackForLastName.innerText = 'C\'est bon !'
+  const invalidFeedBackForLastName = document.createElement('div')
+  invalidFeedBackForLastName.classList.add('invalid-feedback')
+  invalidFeedBackForLastName.innerText = 'C quoi ton nom ???'
+  mLastNameDiv.appendChild(lastName)
+  mLastNameDiv.appendChild(validFeedBackForLastName)
+  mLastNameDiv.appendChild(invalidFeedBackForLastName)
+  mClientInfosDiv.appendChild(mLastNameDiv)
+  // address
+  const mAddressDiv = document.createElement('div')
   const address = document.createElement('input')
   address.setAttribute('type', 'text')
   address.setAttribute('placeholder', 'Adresse')
   address.setAttribute('aria-label', 'Adresse')
+  address.setAttribute('required', '')
   address.classList.add('form-control')
-  mClientInfosDiv.appendChild(address)
+  const validFeedBackForAddress = document.createElement('div')
+  validFeedBackForAddress.classList.add('valid-feedback')
+  validFeedBackForAddress.innerText = 'C\'est OK ici !'
+  const invalidFeedBackForAddress = document.createElement('div')
+  invalidFeedBackForAddress.classList.add('invalid-feedback')
+  invalidFeedBackForAddress.innerText = 'Une adresse SVP !'
+  mAddressDiv.appendChild(address)
+  mAddressDiv.appendChild(validFeedBackForAddress)
+  mAddressDiv.appendChild(invalidFeedBackForAddress)
+  mClientInfosDiv.appendChild(mAddressDiv)
+  // city
+  const mCityDiv = document.createElement('div')
   const city = document.createElement('input')
   city.setAttribute('type', 'text')
   city.setAttribute('placeholder', 'Ville')
   city.setAttribute('aria-label', 'Ville')
+  city.setAttribute('required', '')
   city.classList.add('form-control')
-  mClientInfosDiv.appendChild(city)
+  const validFeedBackForCity = document.createElement('div')
+  validFeedBackForCity.classList.add('valid-feedback')
+  validFeedBackForCity.innerText = 'C\'est bon ! Pas de fautes d\'orthographe ??'
+  const invalidFeedBackForCity = document.createElement('div')
+  invalidFeedBackForCity.classList.add('invalid-feedback')
+  invalidFeedBackForCity.innerText = 'Quelle est ta ville ??'
+  mCityDiv.appendChild(city)
+  mCityDiv.appendChild(validFeedBackForCity)
+  mCityDiv.appendChild(invalidFeedBackForCity)
+  mClientInfosDiv.appendChild(mCityDiv)
+  // email
+  const mEmailDiv = document.createElement('div')
   const email = document.createElement('input')
   email.setAttribute('type', 'email')
   email.setAttribute('placeholder', 'email')
   email.setAttribute('aria-label', 'email')
+  email.setAttribute('required', '')
   email.classList.add('form-control')
-  mClientInfosDiv.appendChild(email)
+  const validFeedBackForEmail = document.createElement('div')
+  validFeedBackForEmail.classList.add('valid-feedback')
+  validFeedBackForEmail.innerText = 'C\'est bon ! Pas de fautes d\'orthographe ??'
+  const invalidFeedBackForEmail = document.createElement('div')
+  invalidFeedBackForEmail.classList.add('invalid-feedback')
+  invalidFeedBackForEmail.innerText = 'Pas de mail, un @ qui manque ?'
+  mEmailDiv.appendChild(email)
+  mEmailDiv.appendChild(validFeedBackForEmail)
+  mEmailDiv.appendChild(invalidFeedBackForEmail)
+  mClientInfosDiv.appendChild(mEmailDiv)
   // submit button
   const orderButton = document.createElement('button')
   orderButton.setAttribute('type', 'submit')
   orderButton.setAttribute('aria-label', 'Commander')
-  const buttonClasses = ['btn', 'btn-outline-success', 'disabled']
+  const buttonClasses = ['btn', 'btn-outline-success', 'enabled']
   orderButton.classList.add(...buttonClasses)
   orderButton.innerText = 'Commander'
   orderButton.onclick = function () {
     // do something
     console.log('Button process order clicked')
     // check infos are completed then enable order button and create client object
+    // https://developer.mozilla.org/fr/docs/Learn/Forms/Form_validation
+    // https://getbootstrap.com/docs/5.0/forms/validation/
     // build and send API post then check if order is registered
     // if registered create order object from cart with order id to build ordered items list
     // then remove cart object
@@ -219,4 +284,7 @@ export const displayCartPage = async theCart => {
   htmlContent.appendChild(blockQuote)
   htmlContent.appendChild(cartContent)
   htmlContent.appendChild(mClientInfosDiv)
+
+  await validateClientForm()
 }
+
