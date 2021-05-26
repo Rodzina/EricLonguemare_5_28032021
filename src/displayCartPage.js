@@ -165,6 +165,58 @@ export const displayCartPage = async theCart => {
     itemTotalAmount.innerText = ((itemToDisplay.unitPrice / 100) * itemToDisplay.qty).toString()
     cartContent.appendChild(itemDiv)
   }
+
+  // build client infos
+  const mClientInfosDiv = document.createElement('div')
+  const firstName = document.createElement('input')
+  firstName.setAttribute('type', 'text')
+  firstName.setAttribute('placeholder', 'Prénom')
+  firstName.setAttribute('aria-label', 'Prénom')
+  firstName.classList.add('form-control')
+  mClientInfosDiv.appendChild(firstName)
+  const lastName = document.createElement('input')
+  lastName.setAttribute('type', 'text')
+  lastName.setAttribute('placeholder', 'Nom')
+  lastName.setAttribute('aria-label', 'Nom')
+  lastName.classList.add('form-control')
+  mClientInfosDiv.appendChild(lastName)
+  const address = document.createElement('input')
+  address.setAttribute('type', 'text')
+  address.setAttribute('placeholder', 'Adresse')
+  address.setAttribute('aria-label', 'Adresse')
+  address.classList.add('form-control')
+  mClientInfosDiv.appendChild(address)
+  const city = document.createElement('input')
+  city.setAttribute('type', 'text')
+  city.setAttribute('placeholder', 'Ville')
+  city.setAttribute('aria-label', 'Ville')
+  city.classList.add('form-control')
+  mClientInfosDiv.appendChild(city)
+  const email = document.createElement('input')
+  email.setAttribute('type', 'email')
+  email.setAttribute('placeholder', 'email')
+  email.setAttribute('aria-label', 'email')
+  email.classList.add('form-control')
+  mClientInfosDiv.appendChild(email)
+  // submit button
+  const orderButton = document.createElement('button')
+  orderButton.setAttribute('type', 'submit')
+  orderButton.setAttribute('aria-label', 'Commander')
+  const buttonClasses = ['btn', 'btn-outline-success', 'disabled']
+  orderButton.classList.add(...buttonClasses)
+  orderButton.innerText = 'Commander'
+  orderButton.onclick = function () {
+    // do something
+    console.log('Button process order clicked')
+    // check infos are completed then enable order button and create client object
+    // build and send API post then check if order is registered
+    // if registered create order object from cart with order id to build ordered items list
+    // then remove cart object
+    // go to congratulation page and order confirmed page
+  }
+  mClientInfosDiv.appendChild(orderButton)
+  // add content to page
   htmlContent.appendChild(blockQuote)
   htmlContent.appendChild(cartContent)
+  htmlContent.appendChild(mClientInfosDiv)
 }
