@@ -44,6 +44,12 @@ const validateClientForm = (theClient) => {
           } catch (e) {
             console.log('Cant save client datas' + e)
           }
+          // then add order to local storage
+
+          // then process API POST
+          // curl -X POST -H "Content-Type: application/json" -d '{"contact": {"firstName": "testFirstname", "lastName": "testLastName", "address": "adresse de test", "city": "cityTest", "email": "email@test.com"}, "products": ["5beaa8bf1c9d440000a57d94"]}' https://polar-retreat-13131.herokuapp.com/api/teddies/order
+          // on success save response
+          // if failed stay on cart page
         }
         form.classList.add('was-validated')
       }, false)
@@ -230,6 +236,7 @@ export const displayCartPage = async (theCart, theClient) => {
   firstName.setAttribute('type', 'text')
   if (isTheClientKnown) {
     firstName.value = theClient.firstName
+    console.log('firtsname is null')
   } else {
     firstName.setAttribute('placeholder', 'Prénom')
   }
@@ -323,7 +330,7 @@ export const displayCartPage = async (theCart, theClient) => {
   if (isTheClientKnown) {
     email.value = theClient.email
   } else {
-    firstName.setAttribute('placeholder', 'email')
+    email.setAttribute('placeholder', 'Email')
   }
   email.setAttribute('aria-label', 'email')
   email.setAttribute('required', '')

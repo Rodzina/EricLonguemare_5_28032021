@@ -5,7 +5,7 @@ import * as bootstrap from 'bootstrap'
 // styles personnalisés
 import { Teddy } from './classes/teddy' // Import our Teddy classes
 import { Cart } from './classes/cart' // Import our Cart classes
-import { Client } from './classes/client' // Import our Cart classes
+import { Client } from './classes/client' // Import our Client classes
 import { fetchFromAPI, getUrl, parse, stringify, updateGeneralQuantityAnPriceDisplayed } from './helpers/common' // Import helpers
 import { displayCartPage } from './displayCartPage'
 import { displayTeddyPage } from './displayTeddyPage'
