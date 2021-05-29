@@ -79,7 +79,7 @@ export const displayTeddyPage = async function (teddy, theCart) {
   const teddyColorsOptions = document.createElement('div')
   teddyColorsOptions.classList.add('btn-group')
   teddyColorsOptions.setAttribute('role', 'group')
-  teddyColorsOptions.setAttribute('name', 'colorform')
+  teddyColorsOptions.setAttribute('id', 'colorform')
   htmlContent.appendChild(teddyColorsOptions)
 
   for (let i = 0, max = teddy.colors.length; i < max; i++) {
