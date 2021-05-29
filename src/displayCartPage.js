@@ -10,8 +10,10 @@ import {
 
 /**
  *
+ * @param theClient
+ * @param entryPoint
  */
-const validateClientForm = (theClient) => {
+const validateClientForm = (theClient, entryPoint) => {
   // do something
   'use strict'
 
@@ -50,6 +52,35 @@ const validateClientForm = (theClient) => {
           // curl -X POST -H "Content-Type: application/json" -d '{"contact": {"firstName": "testFirstname", "lastName": "testLastName", "address": "adresse de test", "city": "cityTest", "email": "email@test.com"}, "products": ["5beaa8bf1c9d440000a57d94"]}' https://polar-retreat-13131.herokuapp.com/api/teddies/order
           // on success save response
           // if failed stay on cart page
+
+          const myHeaders = new Headers()
+          myHeaders.append('Content-Type', 'application/json')
+
+          // build Payload/Body
+
+          const myInit =
+            {
+              method: 'POST',
+              body: '{"contact": {"firstName": "testFirstname", "lastName": "testLastName", "address": "adresse de test", "city": "cityTest", "email": "email@test.com"}, "products": ["5beaa8bf1c9d440000a57d94"]}',
+              headers: myHeaders
+              // mode: 'cors',
+              // cache: 'default'
+            }
+
+          const myRequest = new Request(entryPoint + 'order', myInit)
+
+          fetch(myRequest).then(function (response) {
+            const contentType = response.headers.get('content-type')
+            if (contentType && contentType.indexOf('application/json') !== -1) {
+              return response.json().then(function (json) {
+                // process JSON response
+                console.log('Success : order submitted and validated')
+                console.log(json)
+              })
+            } else {
+              console.log('We dont have a response !')
+            }
+          })
         }
         form.classList.add('was-validated')
       }, false)
@@ -60,9 +91,10 @@ const validateClientForm = (theClient) => {
  *
  * @param theCart
  * @param theClient
+ * @param entryPoint
  * @returns {Promise<void>}
  */
-export const displayCartPage = async (theCart, theClient) => {
+export const displayCartPage = async (theCart, theClient, entryPoint) => {
   const htmlContent = document.getElementById('content')
   const blockQuote = document.createElement('blockquote')
   const cartContent = document.createElement('div')
@@ -236,7 +268,6 @@ export const displayCartPage = async (theCart, theClient) => {
   firstName.setAttribute('type', 'text')
   if (isTheClientKnown) {
     firstName.value = theClient.firstName
-    console.log('firtsname is null')
   } else {
     firstName.setAttribute('placeholder', 'Prénom')
   }
@@ -370,5 +401,5 @@ export const displayCartPage = async (theCart, theClient) => {
   htmlContent.appendChild(cartContent)
   htmlContent.appendChild(mClientInfosDiv)
 
-  await validateClientForm(theClient)
+  await validateClientForm(theClient, entryPoint)
 }
