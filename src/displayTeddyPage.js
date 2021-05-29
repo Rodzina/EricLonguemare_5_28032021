@@ -76,7 +76,7 @@ export const displayTeddyPage = async function (teddy, theCart) {
 
   // Option selection display
 
-  const teddyColorsOptions = document.createElement('form')
+  const teddyColorsOptions = document.createElement('div')
   teddyColorsOptions.classList.add('btn-group')
   teddyColorsOptions.setAttribute('role', 'group')
   teddyColorsOptions.setAttribute('name', 'colorform')
@@ -162,7 +162,8 @@ export const displayTeddyPage = async function (teddy, theCart) {
   htmlContent.appendChild(toCart)
 
   // option selection logic
-  const btnRadios = document.forms.colorform.elements.btnradio
+  // const btnRadios = document.forms.colorform.elements.btnradio
+  const btnRadios = document.getElementsByName('btnradio')
   console.log(btnRadios)
 
   // remove selected option on page start (or reload)
