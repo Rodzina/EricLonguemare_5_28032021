@@ -2,7 +2,7 @@ const fs = require('fs');
 const puppeteer = require('puppeteer');
 
 const url = process.argv[2] || 'https://el-opcr.github.io/EricLonguemare_5_28032021/dist/';
-const path = process.argv[3] || `index.html`;
+const path = process.argv[3] || `tests/index.html`;
 
 (async function main() {
   const browser = await puppeteer.launch();

@@ -16,8 +16,8 @@ const displayTeddyCard = async teddy => {
   myHtmlContent.appendChild(myCard)
   const myCardPicture = document.createElement('img')
   myCardPicture.crossOrigin = 'anonymous'
-  myCardPicture.setAttribute('width', '380px')
-  myCardPicture.setAttribute('height', '250px')
+  myCardPicture.setAttribute('width', '380')
+  myCardPicture.setAttribute('height', '250')
 
   await displayAndStorePicture(myCardPicture, teddy.imageUrl, 'w=380&h=380&height=250&f=webp&crop=cover', '+small')
     .catch(err => console.log(err))
