@@ -88,7 +88,6 @@ export const displayTeddyPage = async function (teddy, theCart) {
     input.type = 'radio'
     input.name = 'btnradio'
     input.setAttribute('id', 'btnradio' + (i + 1))
-    input.setAttribute('autocomplete', 'off')
     input.setAttribute('value', option)
     input.classList.add('btn-check')
     teddyColorsOptions.appendChild(input)
