@@ -58,7 +58,7 @@ const process = async () => {
   }
 
   if (params.has('panier')) {
-    await displayCartPage(theCart, theClient)
+    await displayCartPage(theCart, theClient, entryPoint)
   }
 
   if (params.has('id')) {

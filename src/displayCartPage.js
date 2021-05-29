@@ -10,8 +10,10 @@ import {
 
 /**
  *
+ * @param theClient
+ * @param entryPoint
  */
-const validateClientForm = (theClient) => {
+const validateClientForm = (theClient, entryPoint) => {
   // do something
   'use strict'
 
@@ -54,6 +56,8 @@ const validateClientForm = (theClient) => {
           const myHeaders = new Headers()
           myHeaders.append('Content-Type', 'application/json')
 
+          // build Payload/Body
+
           const myInit =
             {
               method: 'POST',
@@ -63,7 +67,7 @@ const validateClientForm = (theClient) => {
               // cache: 'default'
             }
 
-          const myRequest = new Request('https://polar-retreat-13131.herokuapp.com/api/teddies/order', myInit)
+          const myRequest = new Request(entryPoint + 'order', myInit)
 
           fetch(myRequest).then(function (response) {
             const contentType = response.headers.get('content-type')
@@ -87,9 +91,10 @@ const validateClientForm = (theClient) => {
  *
  * @param theCart
  * @param theClient
+ * @param entryPoint
  * @returns {Promise<void>}
  */
-export const displayCartPage = async (theCart, theClient) => {
+export const displayCartPage = async (theCart, theClient, entryPoint) => {
   const htmlContent = document.getElementById('content')
   const blockQuote = document.createElement('blockquote')
   const cartContent = document.createElement('div')
@@ -396,5 +401,5 @@ export const displayCartPage = async (theCart, theClient) => {
   htmlContent.appendChild(cartContent)
   htmlContent.appendChild(mClientInfosDiv)
 
-  await validateClientForm(theClient)
+  await validateClientForm(theClient, entryPoint)
 }
