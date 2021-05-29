@@ -8,4 +8,6 @@ https://el-opcr.github.io/EricLonguemare_5_28032021/dist/
 
 * index page : https://validator.w3.org/nu/?showsource=yes&showoutline=yes&showimagereport=yes&doc=https%3A%2F%2Fel-opcr.github.io%2FEricLonguemare_5_28032021%2Ftests%2Findex.html
 * teddie page : https://validator.w3.org/nu/?showsource=yes&showoutline=yes&showimagereport=yes&doc=https%3A%2F%2Fel-opcr.github.io%2FEricLonguemare_5_28032021%2Ftests%2Fteddie.html
+* empty cart page : https://validator.w3.org/nu/?showsource=yes&showoutline=yes&showimagereport=yes&doc=https%3A%2F%2Fel-opcr.github.io%2FEricLonguemare_5_28032021%2Ftests%2Fcart.html
+* cart page with teddies : 
  
