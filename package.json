@@ -30,6 +30,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.3.1",
     "parcel": "next",
+    "puppeteer": "^9.1.1",
     "sass": "^1.32.13",
     "sharp": "^0.27.2"
   },
