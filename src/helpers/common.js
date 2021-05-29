@@ -138,7 +138,7 @@ return updatedObject
  *
  * @param theCart
  */
-export function updateGeneralQuantityAnPriceDisplayed (theCart) {
+export const updateGeneralQuantityAnPriceDisplayed = theCart => {
   document.getElementById('itemnumber').innerHTML = theCart.totalNumber
   document.getElementById('totalamount').innerHTML = (theCart.totalAmount / 100).toString()
 }
@@ -149,7 +149,7 @@ export function updateGeneralQuantityAnPriceDisplayed (theCart) {
  * @param teddyColors
  * @param elementID
  */
-export function updateTeddyQuantityToDisplayForColor (selectedColor, teddyColors, elementID, ) {
+export const updateTeddyQuantityToDisplayForColor = (selectedColor, teddyColors, elementID, ) => {
   console.log(elementID)
   const toUpdate = document.getElementById(elementID)
   for (const [key, value] of Object.entries(teddyColors)) {
@@ -167,7 +167,7 @@ export function updateTeddyQuantityToDisplayForColor (selectedColor, teddyColors
  * @param items
  * @returns {*[]}
  */
-export function sortingTheCartTeddiesArray(items) {
+export const sortingTheCartTeddiesArray = items => {
   // https://www.javascripttutorial.net/javascript-array-sort/
   // https://stackoverflow.com/questions/6129952/javascript-sort-array-by-two-fields
   const sortedArray = []
