@@ -6,7 +6,7 @@ import * as bootstrap from 'bootstrap'
 import { Teddy } from './classes/teddy' // Import our Teddy classes
 import { Cart } from './classes/cart' // Import our Cart classes
 import { Client } from './classes/client' // Import our Client classes
-import { fetchFromAPI, getUrl, parse, stringify, updateGeneralQuantityAnPriceDisplayed } from './helpers/common' // Import helpers
+import { fetchFromAPI, getUrl, parse, stringify, updateGeneralQuantityAndPriceDisplayed } from './helpers/common' // Import helpers
 import { displayCartPage } from './displayCartPage'
 import { displayTeddyPage } from './displayTeddyPage'
 import { displayHome } from './displayHome'
@@ -24,12 +24,12 @@ const process = async () => {
   if (localStorage.getItem('cart') === null) {
     console.log('No Cart, init it')
     theCart = new Cart(0, 0)
-    updateGeneralQuantityAnPriceDisplayed(theCart)
+    updateGeneralQuantityAndPriceDisplayed(theCart)
   } else {
     try {
       console.log('One cart exist, get it')
       theCart = parse(localStorage.getItem('cart'))
-      updateGeneralQuantityAnPriceDisplayed(theCart)
+      updateGeneralQuantityAndPriceDisplayed(theCart)
     } catch (e) {
       console.log('Error : Cant get cart' + e)
     }
