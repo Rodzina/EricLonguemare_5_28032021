@@ -4,9 +4,10 @@ import {
   sortingTheCartTeddiesArray,
   stringify,
   updateColorsQty,
-  updateGeneralQuantityAnPriceDisplayed,
+  updateGeneralQuantityAndPriceDisplayed,
   updateTeddyQuantityToDisplayForColor,
-  forceGeneralQuantityAnPriceToZero, updateCartHeadQuantityAnPriceDisplayed
+  forceGeneralQuantityAndPriceToZero,
+  updateCartHeadQuantityAndPriceDisplayed
 } from './helpers/common'
 
 /**
@@ -111,11 +112,9 @@ const validateClientForm = (theCart, theClient, entryPoint) => {
                       localStorage.setItem('order', stringify(json))
                       // remove teddies from cart
                       for (let i = 0, max = itemsOrderedSimple.length; i < max; i++) {
-                        console.log(itemsOrderedSimple)
-                        console.log(itemsOrderedSimple[i])
                         document.getElementById(itemsOrderedSimple[i] + 'card').outerHTML = ''
                       }
-                      forceGeneralQuantityAnPriceToZero()
+                      forceGeneralQuantityAndPriceToZero()
                       // remove cart
                       console.log('remove cart')
                       localStorage.removeItem('cart')
@@ -230,8 +229,8 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
             if (itemToDisplay.qty >= 0) {
               theCart.totalNumber -= 1
               theCart.totalAmount -= itemToDisplay.unitPrice
-              updateGeneralQuantityAnPriceDisplayed(theCart)
-              updateCartHeadQuantityAnPriceDisplayed(theCart)
+              updateGeneralQuantityAndPriceDisplayed(theCart)
+              updateGeneralQuantityAndPriceDisplayed(theCart)
             }
             if (itemToDisplay.qty === 0) {
               console.log('to remove : ' + itemToDisplay.id + 'card')
@@ -276,8 +275,8 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
             // sorted to avoid errors when update cart
             theCart.totalNumber += 1
             theCart.totalAmount += itemToDisplay.unitPrice
-            updateGeneralQuantityAnPriceDisplayed(theCart)
-            updateCartHeadQuantityAnPriceDisplayed(theCart)
+            updateGeneralQuantityAndPriceDisplayed(theCart)
+            updateCartHeadQuantityAndPriceDisplayed(theCart)
             break
           }
         }

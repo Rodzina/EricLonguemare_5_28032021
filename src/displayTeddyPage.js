@@ -5,7 +5,7 @@ import {
   sortingTheCartTeddiesArray,
   stringify,
   updateColorsQty,
-  updateGeneralQuantityAnPriceDisplayed
+  updateGeneralQuantityAndPriceDisplayed
 } from './helpers/common'
 
 /**
@@ -147,7 +147,7 @@ export const displayTeddyPage = async function (teddy, theCart) {
       }
       theCart.totalNumber += 1
       theCart.totalAmount += preselected.unitPrice
-      updateGeneralQuantityAnPriceDisplayed(theCart)
+      updateGeneralQuantityAndPriceDisplayed(theCart)
       theCart.items = sortingTheCartTeddiesArray(theCart.items)
       localStorage.setItem('cart', stringify(theCart))
       // item has been added to cart - back to color selection

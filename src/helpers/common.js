@@ -137,7 +137,7 @@ export const updateColorsQty = (teddyColors, selectedColor, isMinus) => {
  *
  * @param theCart
  */
-export const updateGeneralQuantityAnPriceDisplayed = (theCart) => {
+export const updateGeneralQuantityAndPriceDisplayed = (theCart) => {
   document.getElementById('itemnumber').innerText = theCart.totalNumber.toString()
   document.getElementById('totalamount').innerText = (theCart.totalAmount / 100).toString()
 }
@@ -146,7 +146,7 @@ export const updateGeneralQuantityAnPriceDisplayed = (theCart) => {
  *
  * @param theCart
  */
-export const updateCartHeadQuantityAnPriceDisplayed = (theCart) => {
+export const updateCartHeadQuantityAndPriceDisplayed = (theCart) => {
   document.getElementById('articlenumber').innerText = theCart.totalNumber.toString()
   document.getElementById('articletotalprice').innerText = (theCart.totalAmount / 100).toString()
 }
@@ -154,7 +154,7 @@ export const updateCartHeadQuantityAnPriceDisplayed = (theCart) => {
 /**
  *
  */
-export const forceGeneralQuantityAnPriceToZero = () => {
+export const forceGeneralQuantityAndPriceToZero = () => {
   document.getElementById('itemnumber').innerText = '0'
   document.getElementById('totalamount').innerText = '0'
   document.getElementById('articlenumber').innerText = '0'
