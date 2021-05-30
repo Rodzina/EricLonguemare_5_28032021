@@ -10,10 +10,11 @@ import {
 
 /**
  *
+ * @param theCart
  * @param theClient
  * @param entryPoint
  */
-const validateClientForm = (theClient, entryPoint) => {
+const validateClientForm = (theCart, theClient, entryPoint) => {
   // do something
   'use strict'
 
@@ -46,25 +47,39 @@ const validateClientForm = (theClient, entryPoint) => {
           } catch (e) {
             console.log('Cant save client datas' + e)
           }
-          // then add order to local storage
-
-          // then process API POST
-          // curl -X POST -H "Content-Type: application/json" -d '{"contact": {"firstName": "testFirstname", "lastName": "testLastName", "address": "adresse de test", "city": "cityTest", "email": "email@test.com"}, "products": ["5beaa8bf1c9d440000a57d94"]}' https://polar-retreat-13131.herokuapp.com/api/teddies/order
-          // on success save response
-          // if failed stay on cart page
 
           const myHeaders = new Headers()
           myHeaders.append('Content-Type', 'application/json')
 
-          // build Payload/Body
+          const itemsOrdered = []
+
+          for (let i = 0, max = theCart.items.length; i < max; i++) {
+            const itemToOrder = parse(theCart.items[i])
+            itemsOrdered.push('"' + itemToOrder.id + '"')
+          }
+
+          // Build body/payload JSON
+          const body = '{"contact": {"firstName": "' +
+            theClient.firstName +
+            '", "lastName": "' +
+            theClient.lastName +
+            '", "address": "' +
+            theClient.address +
+            '", "city": "' +
+            theClient.city +
+            '", "email": "' +
+            theClient.email +
+            '"}, "products": [' +
+            itemsOrdered +
+            ']}'
+
+          // const body = '{"contact": {"firstName": "testFirstname", "lastName": "testLastName", "address": "adresse de test", "city": "cityTest", "email": "email@test.com"}, "products": ["5beaa8bf1c9d440000a57d94"]}'
 
           const myInit =
             {
               method: 'POST',
-              body: '{"contact": {"firstName": "testFirstname", "lastName": "testLastName", "address": "adresse de test", "city": "cityTest", "email": "email@test.com"}, "products": ["5beaa8bf1c9d440000a57d94"]}',
+              body: body,
               headers: myHeaders
-              // mode: 'cors',
-              // cache: 'default'
             }
 
           const myRequest = new Request(entryPoint + 'order', myInit)
@@ -251,7 +266,6 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
   // check if we have client infos
   let isTheClientKnown = false
 
-  console.log(theClient)
   if (theClient.firstName && theClient.lastName && theClient.address && theClient.city && theClient.email) {
     // do something
     console.log('Client infos are not empty and stored in local Storage')
@@ -401,5 +415,5 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
   htmlContent.appendChild(cartContent)
   htmlContent.appendChild(mClientInfosDiv)
 
-  await validateClientForm(theClient, entryPoint)
+  await validateClientForm(theCart, theClient, entryPoint)
 }
