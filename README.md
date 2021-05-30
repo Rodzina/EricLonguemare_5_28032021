@@ -1,3 +1,16 @@
+## Setup and test :
+
+- clone this repository
+
+- install : npm install
+
+- dev : npm run dev - then open browser at http://localhost:1234
+
+- build : npm run build - build files are in dist/ folder - source files are in src/ folder
+
+- tests : npm run dev to launch server, then npm run test in a new console (server is listening at http://localhost:1234
+
+
 ## Remote API entry point :
 https://polar-retreat-13131.herokuapp.com/api/teddies/
 
