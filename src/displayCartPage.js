@@ -5,7 +5,8 @@ import {
   stringify,
   updateColorsQty,
   updateGeneralQuantityAnPriceDisplayed,
-  updateTeddyQuantityToDisplayForColor
+  updateTeddyQuantityToDisplayForColor,
+  forceGeneralQuantityAnPriceToZero, updateCartHeadQuantityAnPriceDisplayed
 } from './helpers/common'
 
 /**
@@ -30,6 +31,11 @@ const validateClientForm = (theCart, theClient, entryPoint) => {
           console.log('formulaire KO')
           event.preventDefault()
           event.stopPropagation()
+        } else if (theCart.items.length === 0 || !localStorage.getItem('cart')) { // no items in cart, order is disabled
+          console.log('No items in cart')
+          event.preventDefault()
+          event.stopPropagation()
+          return
         } else {
           // If all forms field are OK
           // set client object
@@ -52,10 +58,12 @@ const validateClientForm = (theCart, theClient, entryPoint) => {
           myHeaders.append('Content-Type', 'application/json')
 
           const itemsOrdered = []
+          const itemsOrderedSimple = []
 
           for (let i = 0, max = theCart.items.length; i < max; i++) {
             const itemToOrder = parse(theCart.items[i])
             itemsOrdered.push('"' + itemToOrder.id + '"')
+            itemsOrderedSimple.push(itemToOrder.id)
           }
 
           // Build body/payload JSON
@@ -99,6 +107,19 @@ const validateClientForm = (theCart, theClient, entryPoint) => {
                       // process JSON response
                       console.log('Success : order submitted and validated')
                       console.log(json)
+                      // create order
+                      localStorage.setItem('order', stringify(json))
+                      // remove teddies from cart
+                      for (let i = 0, max = itemsOrderedSimple.length; i < max; i++) {
+                        console.log(itemsOrderedSimple)
+                        console.log(itemsOrderedSimple[i])
+                        document.getElementById(itemsOrderedSimple[i] + 'card').outerHTML = ''
+                      }
+                      forceGeneralQuantityAnPriceToZero()
+                      // remove cart
+                      console.log('remove cart')
+                      localStorage.removeItem('cart')
+                      // goto success page
                     }
                   })
               } else {
@@ -128,7 +149,13 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
   const blockQuote = document.createElement('blockquote')
   const cartContent = document.createElement('div')
 
-  blockQuote.innerText = 'Article(s) : ' + theCart.totalNumber + ' - ' + 'Montant total : ' + theCart.totalAmount / 100
+  blockQuote.innerHTML = '<span>Article(s) : </span>' +
+    '<span id="articlenumber">' +
+    theCart.totalNumber + '</span> - ' +
+    '<span>Montant total : </span>' +
+    '<span id="articletotalprice">' +
+    theCart.totalAmount / 100 +
+    '</span>'
 
   // sort theCart.items on teddy name to preserve order of items in cart
   theCart.items = sortingTheCartTeddiesArray(theCart.items)
@@ -204,6 +231,7 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
               theCart.totalNumber -= 1
               theCart.totalAmount -= itemToDisplay.unitPrice
               updateGeneralQuantityAnPriceDisplayed(theCart)
+              updateCartHeadQuantityAnPriceDisplayed(theCart)
             }
             if (itemToDisplay.qty === 0) {
               console.log('to remove : ' + itemToDisplay.id + 'card')
@@ -249,6 +277,7 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
             theCart.totalNumber += 1
             theCart.totalAmount += itemToDisplay.unitPrice
             updateGeneralQuantityAnPriceDisplayed(theCart)
+            updateCartHeadQuantityAnPriceDisplayed(theCart)
             break
           }
         }

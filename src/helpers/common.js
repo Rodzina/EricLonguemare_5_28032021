@@ -1,4 +1,3 @@
-
 /**
  *
  * @returns {{baseurl: string, url: URL}}
@@ -114,7 +113,7 @@ export const updateColorsQty = (teddyColors, selectedColor, isMinus) => {
     // add one teddy for ref and color, change quantity displayed
     for (const [key, value] of Object.entries(teddyColors)) {
       if (key === selectedColor) {
-        console.log(" à mettre à jour : " + key)
+        console.log(' à mettre à jour : ' + key)
         updatedObject[key] = value + 1
       } else {
         updatedObject[key] = value
@@ -124,23 +123,42 @@ export const updateColorsQty = (teddyColors, selectedColor, isMinus) => {
     // remove one teddy for ref and color,  change quantity displayed
     for (const [key, value] of Object.entries(teddyColors)) {
       if (key === selectedColor) {
-        console.log(" à mettre à jour : " + key)
+        console.log(' à mettre à jour : ' + key)
         updatedObject[key] = value - 1
       } else {
         updatedObject[key] = value
       }
     }
   }
-return updatedObject
+  return updatedObject
 }
 
 /**
  *
  * @param theCart
  */
-export const updateGeneralQuantityAnPriceDisplayed = theCart => {
-  document.getElementById('itemnumber').innerHTML = theCart.totalNumber
-  document.getElementById('totalamount').innerHTML = (theCart.totalAmount / 100).toString()
+export const updateGeneralQuantityAnPriceDisplayed = (theCart) => {
+  document.getElementById('itemnumber').innerText = theCart.totalNumber.toString()
+  document.getElementById('totalamount').innerText = (theCart.totalAmount / 100).toString()
+}
+
+/**
+ *
+ * @param theCart
+ */
+export const updateCartHeadQuantityAnPriceDisplayed = (theCart) => {
+  document.getElementById('articlenumber').innerText = theCart.totalNumber.toString()
+  document.getElementById('articletotalprice').innerText = (theCart.totalAmount / 100).toString()
+}
+
+/**
+ *
+ */
+export const forceGeneralQuantityAnPriceToZero = () => {
+  document.getElementById('itemnumber').innerText = '0'
+  document.getElementById('totalamount').innerText = '0'
+  document.getElementById('articlenumber').innerText = '0'
+  document.getElementById('articletotalprice').innerText = '0'
 }
 
 /**
@@ -149,12 +167,12 @@ export const updateGeneralQuantityAnPriceDisplayed = theCart => {
  * @param teddyColors
  * @param elementID
  */
-export const updateTeddyQuantityToDisplayForColor = (selectedColor, teddyColors, elementID, ) => {
+export const updateTeddyQuantityToDisplayForColor = (selectedColor, teddyColors, elementID,) => {
   console.log(elementID)
   const toUpdate = document.getElementById(elementID)
   for (const [key, value] of Object.entries(teddyColors)) {
     if (key === selectedColor) {
-      console.log(" Update quantity displayed for : " + key)
+      console.log(' Update quantity displayed for : ' + key)
       toUpdate.innerText = value.toString()
     } else {
       //do something
@@ -184,7 +202,7 @@ export const sortingTheCartTeddiesArray = items => {
   for (let i = 0, max = sortedArray.length; i < max; i++) {
     newArray.push(stringify(sortedArray[i]))
   }
-    return newArray
+  return newArray
 }
 
 /**
