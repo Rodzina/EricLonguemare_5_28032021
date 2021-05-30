@@ -189,18 +189,17 @@ export const updateTeddyQuantityToDisplayForColor = (selectedColor, teddyColors,
 export const updateTeddyQuantityToDisplayForId = (itemID, unitPrice, isMinus) => {
   const mElementQty = document.getElementById(itemID + 'qty')
   const mElementTotalAmount = document.getElementById(itemID + 'totalamount')
+  let mValue = Number(mElementQty.innerText)
   let mUnitPrice = Number(unitPrice)
   mUnitPrice = mUnitPrice / 100
 
   if (isMinus) {
-    let mValue = Number(mElementQty.innerText)
     mValue = mValue - 1
     mElementQty.innerText = mValue.toString()
     const mTotalAmount = mValue * mUnitPrice
     mElementTotalAmount.innerText = mTotalAmount.toString()
     //const mAmount =
   } else {
-    let mValue = Number(mElementQty.innerText)
     mValue = mValue + 1
     mElementQty.innerText = mValue.toString()
     const mTotalAmount = mValue * mUnitPrice
