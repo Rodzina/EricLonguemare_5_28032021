@@ -6,6 +6,7 @@ import {
   updateColorsQty,
   updateGeneralQuantityAndPriceDisplayed,
   updateTeddyQuantityToDisplayForColor,
+  updateTeddyQuantityToDisplayForId,
   forceGeneralQuantityAndPriceToZero,
   updateCartHeadQuantityAndPriceDisplayed
 } from './helpers/common'
@@ -235,6 +236,7 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
             itemToDisplay.colors = updateColorsQty(itemToDisplay.colors, key.toString(), true)
             itemToDisplay.qty -= 1
             updateTeddyQuantityToDisplayForColor(key.toString(), itemToDisplay.colors, myDisplayedQuantityToModify)
+            updateTeddyQuantityToDisplayForId(itemToDisplay.id, itemToDisplay.unitPrice, true)
             theCart.items.splice(z, 1)
             console.log('splice : ' + z)
             if (itemToDisplay.qty > 0) {
@@ -286,6 +288,7 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
             console.log(itemToDisplay.id + key.toString().replace(' ', '').toUpperCase())
             console.log(itemToDisplay.qty)
             updateTeddyQuantityToDisplayForColor(key.toString(), itemToDisplay.colors, myDisplayedQuantityToModify)
+            updateTeddyQuantityToDisplayForId(itemToDisplay.id, itemToDisplay.unitPrice, false)
             theCart.items.splice(z, 1)
             theCart.items.push(stringify(itemToDisplay))
             // sorted to avoid errors when update cart
@@ -309,12 +312,14 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
     }
     // then summary
     const itemQty = document.createElement('div')
+    itemQty.setAttribute('id', itemToDisplay.id + 'qty')
     itemDiv.appendChild(itemQty)
     itemQty.innerText = itemToDisplay.qty
     const itemUnitPrice = document.createElement('div')
     itemDiv.appendChild(itemUnitPrice)
     itemUnitPrice.innerText = (itemToDisplay.unitPrice / 100).toString()
     const itemTotalAmount = document.createElement('div')
+    itemTotalAmount.setAttribute('id', itemToDisplay.id + 'totalamount')
     itemDiv.appendChild(itemTotalAmount)
     itemTotalAmount.innerText = ((itemToDisplay.unitPrice / 100) * itemToDisplay.qty).toString()
     cartContent.appendChild(itemDiv)
