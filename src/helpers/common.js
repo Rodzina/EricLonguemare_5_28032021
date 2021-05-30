@@ -167,7 +167,7 @@ export const forceGeneralQuantityAndPriceToZero = () => {
  * @param teddyColors
  * @param elementID
  */
-export const updateTeddyQuantityToDisplayForColor = (selectedColor, teddyColors, elementID,) => {
+export const updateTeddyQuantityToDisplayForColor = (selectedColor, teddyColors, elementID) => {
   console.log(elementID)
   const toUpdate = document.getElementById(elementID)
   for (const [key, value] of Object.entries(teddyColors)) {
@@ -177,6 +177,34 @@ export const updateTeddyQuantityToDisplayForColor = (selectedColor, teddyColors,
     } else {
       //do something
     }
+  }
+}
+
+/**
+ *
+ * @param itemID
+ * @param unitPrice
+ * @param isMinus
+ */
+export const updateTeddyQuantityToDisplayForId = (itemID, unitPrice, isMinus) => {
+  const mElementQty = document.getElementById(itemID + 'qty')
+  const mElementTotalAmount = document.getElementById(itemID + 'totalamount')
+  let mUnitPrice = Number(unitPrice)
+  mUnitPrice = mUnitPrice / 100
+
+  if (isMinus) {
+    let mValue = Number(mElementQty.innerText)
+    mValue = mValue - 1
+    mElementQty.innerText = mValue.toString()
+    const mTotalAmount = mValue * mUnitPrice
+    mElementTotalAmount.innerText = mTotalAmount.toString()
+    //const mAmount =
+  } else {
+    let mValue = Number(mElementQty.innerText)
+    mValue = mValue + 1
+    mElementQty.innerText = mValue.toString()
+    const mTotalAmount = mValue * mUnitPrice
+    mElementTotalAmount.innerText = mTotalAmount.toString()
   }
 }
 
