@@ -9,6 +9,7 @@ import {
   forceGeneralQuantityAndPriceToZero,
   updateCartHeadQuantityAndPriceDisplayed
 } from './helpers/common'
+import { Order } from './classes/order'
 
 /**
  *
@@ -118,7 +119,21 @@ const validateClientForm = (theCart, theClient, entryPoint) => {
                       // remove cart
                       console.log('remove cart')
                       localStorage.removeItem('cart')
-                      // goto success page
+                      document.getElementById('clientform').classList.remove('was-validated')
+                      const successOrder = document.getElementById('headcontent')
+                      const successSentence = document.createElement('div')
+                      successSentence.innerText = 'Commande passée avec Succès'
+                      const successRef = document.createElement('div')
+                      let theOrder = new Order()
+                      try {
+                        theOrder = parse(localStorage.getItem('order'))
+                      } catch (e) {
+                        // do something
+                        console.log('Can\'t get order from localStorage' + e)
+                      }
+                      successRef.innerText = 'Votre référence est : ' + theOrder.orderId
+                      successOrder.appendChild(successSentence)
+                      successOrder.appendChild(successRef)
                     }
                   })
               } else {
@@ -147,6 +162,7 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
   const htmlContent = document.getElementById('content')
   const blockQuote = document.createElement('blockquote')
   const cartContent = document.createElement('div')
+  cartContent.setAttribute('id', 'headcontent')
 
   blockQuote.innerHTML = '<span>Article(s) : </span>' +
     '<span id="articlenumber">' +
@@ -230,7 +246,7 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
               theCart.totalNumber -= 1
               theCart.totalAmount -= itemToDisplay.unitPrice
               updateGeneralQuantityAndPriceDisplayed(theCart)
-              updateGeneralQuantityAndPriceDisplayed(theCart)
+              updateCartHeadQuantityAndPriceDisplayed(theCart)
             }
             if (itemToDisplay.qty === 0) {
               console.log('to remove : ' + itemToDisplay.id + 'card')
@@ -317,6 +333,7 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
   const mClientInfosDiv = document.createElement('form')
   mClientInfosDiv.classList.add('needs-validation')
   mClientInfosDiv.setAttribute('novalidate', '')
+  mClientInfosDiv.setAttribute('id', 'clientform')
   // firstName
   const mFirstNameDiv = document.createElement('div')
   const firstName = document.createElement('input')
