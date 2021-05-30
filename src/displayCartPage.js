@@ -85,16 +85,30 @@ const validateClientForm = (theCart, theClient, entryPoint) => {
           const myRequest = new Request(entryPoint + 'order', myInit)
 
           fetch(myRequest).then(function (response) {
-            const contentType = response.headers.get('content-type')
-            if (contentType && contentType.indexOf('application/json') !== -1) {
-              return response.json().then(function (json) {
-                // process JSON response
-                console.log('Success : order submitted and validated')
-                console.log(json)
-              })
+            // Api general error
+            if (response.ok) {
+              // Content type error
+              const contentType = response.headers.get('content-type')
+              if (contentType && contentType.indexOf('application/json') !== -1) {
+                return response.json()
+                  .then(function (json) {
+                    // empty response
+                    if (!Object.keys(json).length) {
+                      console.log('Failed : no datas returned, JSON Object is empty')
+                    } else {
+                      // process JSON response
+                      console.log('Success : order submitted and validated')
+                      console.log(json)
+                    }
+                  })
+              } else {
+                console.log('Failed : Response is not JSON !')
+              }
             } else {
-              console.log('We dont have a response !')
+              console.log('Failed : cant fetch API ' + response.status)
             }
+          }).catch(error => {
+            console.log('Failed : cant fetch API - general error :' + error)
           })
         }
         form.classList.add('was-validated')
@@ -401,10 +415,10 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
     // do something
     console.log('Button process order clicked')
     // check infos are completed then enable order button and create client object
-    // see validateClientForm()
+    // !!! see validateClientForm()
     // https://developer.mozilla.org/fr/docs/Learn/Forms/Form_validation
     // https://getbootstrap.com/docs/5.0/forms/validation/
-    // build and send API post then check if order is registered
+    // build and send API post then check if order is registered (orderid returned)
     // if registered create order object from cart with order id to build ordered items list
     // then remove cart object
     // go to congratulation page and order confirmed page
