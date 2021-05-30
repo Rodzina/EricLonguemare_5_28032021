@@ -54,7 +54,7 @@ export const displayTeddyPage = async function (teddy, theCart) {
   teddyPrice.appendChild(teddyPriceLabel)
   teddyPriceLabel.classList.add('label')
 
-  const teddyPriceLabelTextOne = document.createTextNode('Achète moi !')
+  const teddyPriceLabelTextOne = document.createTextNode('Adopte moi !')
   teddyPriceLabel.appendChild(teddyPriceLabelTextOne)
 
   const teddyPriceTextValue = document.createElement('span')
