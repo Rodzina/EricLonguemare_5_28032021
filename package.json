@@ -6,7 +6,7 @@
     "dev": "parcel src/index.html src/teddy.html src/panier.html",
     "build": "parcel build --public-url . src/index.html src/teddy.html src/panier.html --no-source-maps",
     "prebuild": "rm -rf dist",
-    "scrape": "node tests/scrape.test.js.old",
+    "scrape": "node tests/scrape.test.js",
     "test": "node ./node_modules/mocha/bin/mocha --timeout=30000 tests"
   },
   "repository": {
