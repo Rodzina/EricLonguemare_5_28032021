@@ -20,7 +20,7 @@ const myUrlsGithub = [
 const getPage = async myUrls => {
   // scrape Pages for W3C validation
   for (let myUrl of myUrlsGithub) {
-    const browser = await puppeteer.launch()
+    const browser = await puppeteer.launch({headless:false})
     const [page] = await browser.pages()
     // console.log(myUrl)
     console.log(myUrl[0])
@@ -28,26 +28,15 @@ const getPage = async myUrls => {
 
     await page.goto(myUrl[0], { waitUntil: 'networkidle0' })
     await page.evaluate(() => {
-      localStorage.clear()
-      const theTestCart = {
-        'totalNumber': 1,
-        'totalAmount': 5500,
-        'items': [{
-          'id': '5beaacd41c9d440000a57d97',
-          'colors': { 'Beige': 1, 'Tan': 0, 'Chocolate': 0 },
-          'color': 'Tan',
-          'qty': 1,
-          'unitPrice': 5500,
-          'name': 'Garfunkel',
-          'imageUrl': 'http://polar-retreat-13131.herokuapp.com/images/teddy_5.jpg'
-        }]
-      }
-
-      localStorage.setItem('cart', JSON.stringify(theTestCart))
+      //localStorage.clear()
+      const theTestCart = '{"totalNumber":2,"totalAmount":8400,"items":["{\\"id\\":\\"5beaa8bf1c9d440000a57d94\\",\\"colors\\":{\\"Pale brown\\":1,\\"Dark brown\\":0,\\"White\\":0},\\"color\\":\\"Pale brown\\",\\"qty\\":1,\\"unitPrice\\":3900,\\"name\\":\\"Arnold\\",\\"imageUrl\\":\\"http://polar-retreat-13131.herokuapp.com/images/teddy_2.jpg\\"}","{\\"id\\":\\"5beaabe91c9d440000a57d96\\",\\"colors\\":{\\"Brown\\":1,\\"Blue\\":0,\\"Pink\\":0},\\"color\\":\\"Brown\\",\\"qty\\":1,\\"unitPrice\\":4500,\\"name\\":\\"Gustav\\",\\"imageUrl\\":\\"http://polar-retreat-13131.herokuapp.com/images/teddy_4.jpg\\"}"]}'
+      //console.log(theTestCart)
+      //console.log(JSON.stringify(theTestCart).toString())
+      localStorage.setItem('cart', theTestCart)
     })
     await page.goto(myUrl[0], { waitUntil: 'networkidle0' })
     fs.writeFileSync(myUrl[1], await page.content())
-    await browser.close()
+    //await browser.close()
   }
 }
 
