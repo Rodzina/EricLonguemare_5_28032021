@@ -122,6 +122,8 @@ const validateClientForm = (theCart, theClient, entryPoint) => {
                       localStorage.removeItem('cart')
                       document.getElementById('clientform').classList.remove('was-validated')
                       const successOrder = document.getElementById('headcontent')
+                      const successOrderClassesToRemove = ['d-flex', 'flex-wrap']
+                      successOrder.classList.remove(...successOrderClassesToRemove)
                       const successSentence = document.createElement('div')
                       successSentence.innerText = 'Commande passée avec Succès'
                       const successRef = document.createElement('div')
