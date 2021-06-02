@@ -219,7 +219,7 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
       minusButton.setAttribute('autocomplete', 'off')
       minusButton.setAttribute('value', key.toString())
       const minusButtonIcon = document.createElement('i')
-      minusButtonIcon.classList.add('bi', 'bi-dash-circle-fill')
+      minusButtonIcon.classList.add('bi', 'bi-dash-circle-fill', 'me-1')
       minusButtonIcon.setAttribute('aria-label', 'Enlever un ' + itemToDisplay.name + ' de couleur ' + key.toString())
       minusButton.appendChild(minusButtonIcon)
       minusButton.onclick = function () {
@@ -267,13 +267,13 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
       }
       const qtySpan = document.createElement('span')
       qtySpan.setAttribute('id', itemToDisplay.id + key.toString().replace(' ', '').toUpperCase())
-      qtySpan.innerText = ' ' + value.toString() + ' '
+      qtySpan.innerText = value.toString()
       const plusButton = document.createElement('span')
       plusButton.setAttribute('type', 'button')
       plusButton.setAttribute('autocomplete', 'off')
       plusButton.setAttribute('value', key.toString())
       const plusButtonIcon = document.createElement('i')
-      plusButtonIcon.classList.add('bi', 'bi-plus-circle-fill')
+      plusButtonIcon.classList.add('bi', 'bi-plus-circle-fill', 'ms-1')
       plusButtonIcon.setAttribute('aria-label', 'Ajouter un ' + itemToDisplay.name + ' de couleur ' + key.toString())
       plusButton.appendChild(plusButtonIcon)
       plusButton.onclick = function () {
