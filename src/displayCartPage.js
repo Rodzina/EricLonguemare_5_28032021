@@ -163,6 +163,8 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
   const htmlContent = document.getElementById('content')
   const blockQuote = document.createElement('blockquote')
   const cartContent = document.createElement('div')
+  const cartContentClasses = ['d-flex', 'flex-wrap']
+  cartContent.classList.add(...cartContentClasses)
   cartContent.setAttribute('id', 'headcontent')
 
   blockQuote.innerHTML = '<span>Article(s) : </span>' +
@@ -181,7 +183,7 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
   for (let i = 0, max = length; i < max; i++) {
     const itemToDisplay = parse(theCart.items[i])
     const itemDiv = document.createElement('div')
-    const itemDivClasses = ['card', 'd-flex', 'mb-3']
+    const itemDivClasses = ['card', 'd-flex', 'w-33', 'mb-3']
     itemDiv.classList.add(...itemDivClasses)
     itemDiv.setAttribute('id', itemToDisplay.id + 'card')
     const teddyPicture = document.createElement('img')
