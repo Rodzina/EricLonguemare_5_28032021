@@ -181,7 +181,7 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
   for (let i = 0, max = length; i < max; i++) {
     const itemToDisplay = parse(theCart.items[i])
     const itemDiv = document.createElement('div')
-    const itemDivClasses = ['card', 'd-flex']
+    const itemDivClasses = ['card', 'd-flex', 'mb-3']
     itemDiv.classList.add(...itemDivClasses)
     itemDiv.setAttribute('id', itemToDisplay.id + 'card')
     const teddyPicture = document.createElement('img')
@@ -205,7 +205,8 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
     itemDiv.appendChild(teddyColorsDetailContainer)
     for (const [key, value] of Object.entries(itemToDisplay.colors)) {
       const DetailsDiv = document.createElement('div')
-      DetailsDiv.classList.add('justify-content-center')
+      const detailsDivClasses = ['justify-content-center']
+      DetailsDiv.classList.add(...detailsDivClasses)
       const colorDiv = document.createElement('div')
       DetailsDiv.appendChild(colorDiv)
       colorDiv.innerText = key
@@ -336,7 +337,8 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
     isTheClientKnown = true
   }
   const mClientInfosDiv = document.createElement('form')
-  mClientInfosDiv.classList.add('needs-validation')
+  const clientInfoDivClasses = ['needs-validation']
+  mClientInfosDiv.classList.add(...clientInfoDivClasses)
   mClientInfosDiv.setAttribute('novalidate', '')
   mClientInfosDiv.setAttribute('id', 'clientform')
   // firstName
@@ -443,7 +445,8 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
   }
   email.setAttribute('aria-label', 'email')
   email.setAttribute('required', '')
-  email.classList.add('form-control')
+  const emailClasses = ['form-control', 'mb-3']
+  email.classList.add(...emailClasses)
   const validFeedBackForEmail = document.createElement('div')
   validFeedBackForEmail.classList.add('valid-feedback')
   validFeedBackForEmail.innerText = 'C\'est bon ! Super !'
@@ -458,7 +461,7 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
   const orderButton = document.createElement('button')
   orderButton.setAttribute('type', 'submit')
   orderButton.setAttribute('aria-label', 'Commander')
-  const buttonClasses = ['btn', 'btn-outline-success', 'enabled']
+  const buttonClasses = ['btn', 'btn-outline-success', 'mb-3', 'enabled']
   orderButton.classList.add(...buttonClasses)
   orderButton.innerText = 'Commander'
   orderButton.onclick = function () {
