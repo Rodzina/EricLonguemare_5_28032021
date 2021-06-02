@@ -173,7 +173,8 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
     '<span>Montant total : </span>' +
     '<span id="articletotalprice">' +
     theCart.totalAmount / 100 +
-    '</span>'
+    '</span>' +
+    '<span> BR</span>'
 
   // sort theCart.items on teddy name to preserve order of items in cart
   theCart.items = sortingTheCartTeddiesArray(theCart.items)
@@ -213,7 +214,7 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
       DetailsDiv.appendChild(colorDiv)
       colorDiv.innerText = key
       const colorDivContainer = document.createElement('div')
-      const minusButton = document.createElement('button')
+      const minusButton = document.createElement('span')
       minusButton.setAttribute('type', 'button')
       minusButton.setAttribute('autocomplete', 'off')
       minusButton.setAttribute('value', key.toString())
@@ -266,8 +267,8 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
       }
       const qtySpan = document.createElement('span')
       qtySpan.setAttribute('id', itemToDisplay.id + key.toString().replace(' ', '').toUpperCase())
-      qtySpan.innerText = value.toString()
-      const plusButton = document.createElement('button')
+      qtySpan.innerText = ' ' + value.toString() + ' '
+      const plusButton = document.createElement('span')
       plusButton.setAttribute('type', 'button')
       plusButton.setAttribute('autocomplete', 'off')
       plusButton.setAttribute('value', key.toString())
