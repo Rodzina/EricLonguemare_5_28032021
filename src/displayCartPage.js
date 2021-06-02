@@ -217,7 +217,7 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
       colorDiv.innerText = key
       const colorDivContainer = document.createElement('div')
       const minusButton = document.createElement('span')
-      // minusButton.setAttribute('type', 'button')
+      minusButton.setAttribute('role', 'button')
       // minusButton.setAttribute('autocomplete', 'off')
       // minusButton.setAttribute('value', key.toString())
       const minusButtonIcon = document.createElement('i')
@@ -271,7 +271,7 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
       qtySpan.setAttribute('id', itemToDisplay.id + key.toString().replace(' ', '').toUpperCase())
       qtySpan.innerText = value.toString()
       const plusButton = document.createElement('span')
-      // plusButton.setAttribute('type', 'button')
+      plusButton.setAttribute('role', 'button')
       // plusButton.setAttribute('autocomplete', 'off')
       // plusButton.setAttribute('value', key.toString())
       const plusButtonIcon = document.createElement('i')
