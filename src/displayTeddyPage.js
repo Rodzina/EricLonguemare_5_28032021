@@ -102,7 +102,7 @@ export const displayTeddyPage = async function (teddy, theCart) {
 
   // Add to cart display and actions
   const toCart = document.createElement('button')
-  const toCardClassList = ['btn', 'btn-block', 'btn-outline-success', 'disabled']
+  const toCardClassList = ['btn', 'btn-block', 'btn-outline-success', 'mb-3', 'disabled']
   toCart.classList.add(...toCardClassList)
   toCart.setAttribute('type', 'button')
   toCart.setAttribute('id', 'addToCart')
