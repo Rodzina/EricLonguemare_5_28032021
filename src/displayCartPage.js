@@ -184,7 +184,7 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
   for (let i = 0, max = length; i < max; i++) {
     const itemToDisplay = parse(theCart.items[i])
     const itemDiv = document.createElement('div')
-    const itemDivClasses = ['card', 'd-flex', 'w-33', 'mb-3']
+    const itemDivClasses = ['card', 'd-flex', 'mb-3']
     itemDiv.classList.add(...itemDivClasses)
     itemDiv.setAttribute('id', itemToDisplay.id + 'card')
     const teddyPicture = document.createElement('img')
@@ -316,16 +316,39 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
     }
     // then summary
     const itemQty = document.createElement('div')
-    itemQty.setAttribute('id', itemToDisplay.id + 'qty')
+    const itemQtyLabel = document.createElement('span')
+    itemQtyLabel.innerText = 'Nombre d\'unité : '
+    const itemQtyValue = document.createElement('span')
+    itemQtyValue.setAttribute('id', itemToDisplay.id + 'qty')
+    itemQtyValue.innerText = itemToDisplay.qty.toString()
+    itemQty.appendChild(itemQtyLabel)
+    itemQty.appendChild(itemQtyValue)
     itemDiv.appendChild(itemQty)
-    itemQty.innerText = itemToDisplay.qty
+
     const itemUnitPrice = document.createElement('div')
+    const itemUnitPriceLabel = document.createElement('span')
+    itemUnitPriceLabel.innerText = 'Prix unitaire : '
+    const itemUnitPriceValue = document.createElement('span')
+    itemUnitPriceValue.innerText = (itemToDisplay.unitPrice / 100).toString()
+    const itemUnitPriceCurrency = document.createElement('span')
+    itemUnitPriceCurrency.innerText = ' BR'
+    itemUnitPrice.appendChild(itemUnitPriceLabel)
+    itemUnitPrice.appendChild(itemUnitPriceValue)
+    itemUnitPrice.appendChild(itemUnitPriceCurrency)
     itemDiv.appendChild(itemUnitPrice)
-    itemUnitPrice.innerText = (itemToDisplay.unitPrice / 100).toString()
+
     const itemTotalAmount = document.createElement('div')
-    itemTotalAmount.setAttribute('id', itemToDisplay.id + 'totalamount')
+    const itemTotalAmountLabel = document.createElement('span')
+    itemTotalAmountLabel.innerText = 'Sous-total : '
+    const itemTotalAmountValue = document.createElement('span')
+    itemTotalAmountValue.setAttribute('id', itemToDisplay.id + 'totalamount')
+    itemTotalAmountValue.innerText = ((itemToDisplay.unitPrice / 100) * itemToDisplay.qty).toString()
+    const itemTotalAmountCurrency = document.createElement('span')
+    itemTotalAmountCurrency.innerText = ' BR'
+    itemTotalAmount.appendChild(itemTotalAmountLabel)
+    itemTotalAmount.appendChild(itemTotalAmountValue)
+    itemTotalAmount.appendChild(itemTotalAmountCurrency)
     itemDiv.appendChild(itemTotalAmount)
-    itemTotalAmount.innerText = ((itemToDisplay.unitPrice / 100) * itemToDisplay.qty).toString()
     cartContent.appendChild(itemDiv)
   }
 
