@@ -25,7 +25,7 @@ https://el-opcr.github.io/EricLonguemare_5_28032021/dist/
  
  ## Google Lighthouse reports :
  
-* [index page](https://lighthouse-dot-webdotdevsite.appspot.com//lh/html?url=https%3A%2F%2Fel-opcr.github.io%2FEricLonguemare_5_28032021%2Fdist%2F)
+* [index page](https://googlechrome.github.io/lighthouse/viewer/?gist=11444c4ef812893fe9d83eef34e1745a)
 * [Teddie page](https://lighthouse-dot-webdotdevsite.appspot.com//lh/html?url=https%3A%2F%2Fel-opcr.github.io%2FEricLonguemare_5_28032021%2Fdist%2Fteddy.html%3Fid%3D5beaa8bf1c9d440000a57d94)
 * [Cart page](https://lighthouse-dot-webdotdevsite.appspot.com//lh/html?url=https%3A%2F%2Fel-opcr.github.io%2FEricLonguemare_5_28032021%2Fdist%2Fpanier.html%3Fpanier)
 
