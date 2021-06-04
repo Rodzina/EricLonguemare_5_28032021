@@ -1,4 +1,4 @@
-import * as bootstrap from 'bootstrap'
+// import { Button as Tooltip, Toast as Toast, Popover as Popover } from 'bootstrap'
 // Supprimer les modules non utilisés. Si Popover, Tooltip, Dropdown sont utilisés : popper.js sera ajouté.
 // import {Alert, Button, Carousel, Collapse, Dropdown, Modal, Popover, ScrollSpy, Tab, Toast, Tooltip} from "bootstrap";
 // utilise ESM
@@ -81,7 +81,7 @@ process()
   .catch(err => console.log(err))
 
 // Check boostrap availability
-
+/*
 if (typeof bootstrap !== 'undefined' || bootstrap !== null) {
   console.log('Alert version : ' + bootstrap.Alert.VERSION)
   console.log('Button version : ' + bootstrap.Button.VERSION)
@@ -91,3 +91,4 @@ if (typeof bootstrap !== 'undefined' || bootstrap !== null) {
 } else {
   console.log('index.js : Bootstrap non défini')
 }
+*/
