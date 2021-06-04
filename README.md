@@ -22,8 +22,16 @@ https://el-opcr.github.io/EricLonguemare_5_28032021/dist/
 * [index page](https://validator.w3.org/nu/?showsource=yes&showoutline=yes&showimagereport=yes&doc=https%3A%2F%2Fel-opcr.github.io%2FEricLonguemare_5_28032021%2Ftests%2Findex.html)
 * [teddie page](https://validator.w3.org/nu/?showsource=yes&showoutline=yes&showimagereport=yes&doc=https%3A%2F%2Fel-opcr.github.io%2FEricLonguemare_5_28032021%2Ftests%2Fteddie.html)
 * [cart page with Full HTML - Some Teddies in cart](https://validator.w3.org/nu/?showsource=yes&showoutline=yes&showimagereport=yes&doc=https%3A%2F%2Fel-opcr.github.io%2FEricLonguemare_5_28032021%2Ftests%2Fcart.html)
+
+## W3C CSS3 Lint
+
+* [index page](https://jigsaw.w3.org/css-validator/validator?uri=https%3A%2F%2Fel-opcr.github.io%2FEricLonguemare_5_28032021%2Fdist%2F&profile=css3svg&usermedium=all&warning=1&vextwarning=&lang=fr)
+* [Teddie page](https://jigsaw.w3.org/css-validator/validator?uri=https%3A%2F%2Fel-opcr.github.io%2FEricLonguemare_5_28032021%2Fdist%2Fteddy.html%3Fid%3D5beaa8bf1c9d440000a57d94&profile=css3svg&usermedium=all&warning=1&vextwarning=&lang=fr)
+* [Cart page](https://jigsaw.w3.org/css-validator/validator?uri=https%3A%2F%2Fel-opcr.github.io%2FEricLonguemare_5_28032021%2Fdist%2Fpanier.html%3Fpanier&profile=css3svg&usermedium=all&warning=1&vextwarning=&lang=fr)
+
+see here for CSS errors : [Bootstrap 5 Validators](https://getbootstrap.com/docs/5.0/getting-started/browsers-devices/#validators)
  
- ## Google Lighthouse reports :
+## Google Lighthouse reports :
  
 * [index page](https://googlechrome.github.io/lighthouse/viewer/?gist=11444c4ef812893fe9d83eef34e1745a)
 * [Teddie page](https://googlechrome.github.io/lighthouse/viewer/?gist=8e2239966213282eb71f252da05f3b0a)
