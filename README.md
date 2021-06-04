@@ -27,6 +27,6 @@ https://el-opcr.github.io/EricLonguemare_5_28032021/dist/
  
 * [index page](https://googlechrome.github.io/lighthouse/viewer/?gist=11444c4ef812893fe9d83eef34e1745a)
 * [Teddie page](https://googlechrome.github.io/lighthouse/viewer/?gist=8e2239966213282eb71f252da05f3b0a)
-* [Cart page](https://lighthouse-dot-webdotdevsite.appspot.com//lh/html?url=https%3A%2F%2Fel-opcr.github.io%2FEricLonguemare_5_28032021%2Fdist%2Fpanier.html%3Fpanier)
+* [Cart page - With some teddies in cart](https://googlechrome.github.io/lighthouse/viewer/?gist=f795a8e915d31dffe9b676a32d55e942)
 
 
