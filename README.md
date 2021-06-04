@@ -8,7 +8,7 @@
 
 - build : npm run build - build files are in dist/ folder - source files are in src/ folder
 
-- tests : npm run dev to launch server, then npm run test in a new console (server is listening at http://localhost:1234)
+- scrape : npm run scrape - Use Puppeteer to scrape pages and lint - Add some teddies in cart to validate javascript generated HTML
 
 
 ## Remote API entry point :
