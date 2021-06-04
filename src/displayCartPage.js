@@ -249,7 +249,7 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
             if (itemToDisplay.qty > 0) {
               console.log('push quantity :' + itemToDisplay.qty)
               theCart.items.push(stringify(itemToDisplay))
-              console.log('push')
+              console.log(itemToDisplay.colors)
             }
             if (itemToDisplay.qty >= 0) {
               theCart.totalNumber -= 1
@@ -299,6 +299,7 @@ export const displayCartPage = async (theCart, theClient, entryPoint) => {
             updateTeddyQuantityToDisplayForId(itemToDisplay.id, itemToDisplay.unitPrice, false)
             theCart.items.splice(z, 1)
             theCart.items.push(stringify(itemToDisplay))
+            console.log(itemToDisplay.colors)
             // sorted to avoid errors when update cart
             theCart.totalNumber += 1
             theCart.totalAmount += itemToDisplay.unitPrice

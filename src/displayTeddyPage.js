@@ -127,12 +127,14 @@ export const displayTeddyPage = async function (teddy, theCart) {
           const itemToCheck = parse(theCart.items[i])
           if (itemToCheck.id === preselected.id) {
             console.log('Update quantity for teddy already in cart')
-            console.log('Objet colors 1:')
+            console.log('Objet colors before update:')
             console.log(itemToCheck.colors)
             itemToCheck.colors = updateColorsQty(itemToCheck.colors, preselected.color)
             itemToCheck.qty += 1
             theCart.items.splice(i, 1)
             theCart.items.push(stringify(itemToCheck))
+            console.log('Updated cart items content :')
+            console.log(itemToCheck.colors)
             isFound = true
             break
           }
