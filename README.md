@@ -1,3 +1,5 @@
+![CodeQL](https://github.com/el-opcr/EricLonguemare_5_28032021/actions/workflows/codeql-analysis.yml/badge.svg)
+
 ## Setup and test :
 
 - clone this repository
